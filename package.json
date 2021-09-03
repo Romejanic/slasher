@@ -1,0 +1,21 @@
+{
+    "name": "slasher",
+    "version": "1.0.0",
+    "description": "A framework to simplify the creation of Discord bots.",
+    "keywords": [
+        "discord", "framework", "slash", "slash commands"
+    ],
+    "author": {
+        "name": "Jack Davenport",
+        "email": "jack.davenport5011@gmail.com"
+    },
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {},
+    "dependencies": {
+        "discord.js": "^13.1.0"
+    },
+    "devDependencies": {
+        "typescript": "^4.4.2"
+    }
+}
