@@ -3,7 +3,10 @@
     "version": "1.0.0",
     "description": "A framework to simplify the creation of Discord bots.",
     "keywords": [
-        "discord", "framework", "slash", "slash commands"
+        "discord",
+        "framework",
+        "slash",
+        "slash commands"
     ],
     "author": {
         "name": "Jack Davenport",
@@ -18,6 +21,7 @@
         "slasher": "build/slasher.js"
     },
     "dependencies": {
+        "ansi-colors": "^4.1.1",
         "discord.js": "^13.1.0"
     },
     "devDependencies": {
