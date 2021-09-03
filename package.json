@@ -11,7 +11,12 @@
     },
     "license": "MIT",
     "main": "index.js",
-    "scripts": {},
+    "scripts": {
+        "build": "tsc && npm link"
+    },
+    "bin": {
+        "slasher": "build/slasher.js"
+    },
     "dependencies": {
         "discord.js": "^13.1.0"
     },
