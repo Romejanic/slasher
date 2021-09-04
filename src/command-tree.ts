@@ -2,11 +2,13 @@ export type CommandTree = {
     [name: string]: Command
 };
 
+export type OptionList = {
+    [name: string]: Option | Subcommand | SubcommandGroup
+}
+
 export type Command = {
     description: string,
-    options?: {
-        [name: string]: Option | Subcommand | SubcommandGroup
-    }
+    options?: OptionList
 };
 
 export type Option = {
