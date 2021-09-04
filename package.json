@@ -1,6 +1,6 @@
 {
-    "name": "slasher",
-    "version": "1.0.0",
+    "name": "discord.js-slasher",
+    "version": "0.0.1",
     "description": "A framework to simplify the creation of Discord bots.",
     "keywords": [
         "discord",
@@ -15,7 +15,8 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "build": "tsc && npm link"
+        "build": "tsc && npm link",
+        "dev": "tsc -w"
     },
     "bin": {
         "slasher": "build/slasher.js"
