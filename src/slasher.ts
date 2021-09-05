@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import * as colors from 'ansi-colors';
 import * as Types from './command-tree';
+import * as readline from 'readline';
 import CommandPreview from './command-preview';
 
 const OPTION_TYPES = {
@@ -62,6 +63,39 @@ const OPTION_TYPE_TEST = Object.keys(OPTION_TYPES).filter(s => s !== "subcommand
     console.log(colors.bold.yellow("Command tree has been evaluated, these are the possible commands:"));
     console.log(commands.map(s => colors.yellow("  /" + s)).join("\n"));
     console.log();
+
+    let rl = promised(readline.createInterface({
+        input: process.stdin,
+        output: process.stdout 
+    }));
+
+    let confirm = await yesNo(colors.yellow("Are these correct? (y/n)"), rl);
+    if(!confirm) {
+        console.log();
+        console.log(colors.red("Cancelled"));
+        return process.exit(0);
+    }
+
+    // check if they are uploading guild or global commands
+    console.log();
+    console.log(colors.yellow.bold("How would you like to upload the commands?"));
+    console.log(colors.yellow("  1. For a specific server (updates instantly - use for testing)"));
+    console.log(colors.yellow("  2. For all servers       (may take up to an hour to update)"));
+    console.log();
+
+    let num: number = -1;
+    while(num != 1 && num != 2) {
+        let init = num == -1;
+        let ans = await rl.question(init ? colors.yellow("Please choose an option (1/2) ") : colors.red("Please enter either 1 or 2: "));
+        let n = Number(ans);
+        if(isNaN(n)) {
+            num = -2;
+        } else {
+            num = n;
+        }
+    }
+    
+    
 
 })();
 
@@ -224,4 +258,29 @@ function getPossibleOptionCommands(options: Types.OptionList, commands: string[]
     for(let i = 0; i < Object.keys(options).length - offset; i++) {
         preview.pop();
     }
+}
+
+async function yesNo(query: string, intf: PromisedInterface) {
+    let answer: string;
+    while(answer != "y" && answer != "n" && answer != "yes" && answer != "no") {
+        let q = answer ? colors.red("Please enter one of: (y, n, yes, no): ") : query + " ";
+        answer = (await intf.question(q)).toLowerCase();
+    }
+    return answer == "y" || answer == "yes";
+}
+
+type PromisedInterface = {
+    question: (query: string) => Promise<string>
+};
+
+function promised(intf: readline.Interface): PromisedInterface {
+    return {
+        question: (query: string): Promise<string> => {
+            return new Promise((resolve) => {
+                intf.question(query, (answer) => {
+                    resolve(answer);
+                })
+            });
+        }
+    };
 }
