@@ -46,7 +46,7 @@
                                 { "const": "user", "description": "Allows user to choose a user to target" },
                                 { "const": "channel", "description": "Allows user to choose a channel to target" },
                                 { "const": "role", "description": "Allows user to choose a role to target" },
-                                { "const": "mentionable", "description": "Allows user to target anything mentionable (i.e. users, roles and channels)" }
+                                { "const": "mentionable", "description": "Allows user to target anything mentionable (i.e. users and roles)" }
                             ]
                         },
                         "choices": {
