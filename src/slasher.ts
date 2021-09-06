@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as colors from 'ansi-colors';
 import * as Types from './command-tree';
 import * as readline from 'readline';
+import { Writable } from 'stream';
 import CommandPreview from './command-preview';
 
 const OPTION_TYPES = {
@@ -64,9 +65,25 @@ const OPTION_TYPE_TEST = Object.keys(OPTION_TYPES).filter(s => s !== "subcommand
     console.log(commands.map(s => colors.yellow("  /" + s)).join("\n"));
     console.log();
 
+    let muted = new BooleanRef(false);
     let rl = promised(readline.createInterface({
         input: process.stdin,
-        output: process.stdout 
+        output: new Writable({
+            write: (chunk, encoding, cb) => {
+                if(muted.get()) {
+                    let len = 1;
+                    if(chunk.length) {
+                        len = chunk.length;
+                    }
+                    let txt = Array(chunk).map(s => "*").join("");
+                    process.stdout.write(Buffer.from(txt));
+                } else {
+                    process.stdout.write(chunk, encoding);
+                }
+                cb();
+            }
+        }),
+        terminal: true 
     }));
 
     let confirm = await yesNo(colors.yellow("Are these correct? (y/n)"), rl);
@@ -94,8 +111,32 @@ const OPTION_TYPE_TEST = Object.keys(OPTION_TYPES).filter(s => s !== "subcommand
             num = n;
         }
     }
+    let updateGlobal = num === 2;
     
+    console.log();
+
+    let token = await tokenInput(colors.yellow("Please enter your bot's token (that you would use to log into it): "), rl, muted);
+    let guild = "";
+    if(!updateGlobal) {
+        guild = await rl.question(colors.yellow("Please enter the ID of the server to update (right click on server and copy ID): "));
+    }
+
+    // confirm before performing the update
+    console.log();
+    console.log(colors.yellow.bold("Great! Your bot's commands will now be updated " + (updateGlobal ? "globally" : "for your server")));
+    if(updateGlobal) {
+        console.log(colors.yellow("(Please note that it may take up to an hour for your changes to be applied)"));
+    }
+    console.log();
     
+    confirm = await yesNo(colors.yellow("Are you ready to proceed? (y/n): "), rl);
+    if(!confirm) {
+        console.log();
+        console.log(colors.red("Cancelled"));
+        return process.exit(0);
+    }
+
+
 
 })();
 
@@ -269,12 +310,25 @@ async function yesNo(query: string, intf: PromisedInterface) {
     return answer == "y" || answer == "yes";
 }
 
+function tokenInput(query: string, intf: PromisedInterface, muted: BooleanRef) {
+    return new Promise((resolve) => {
+        intf.reference.question(query, (answer) => {
+            muted.set(false);
+            process.stdout.write("\n");
+            resolve(answer);
+        });
+        muted.set(true);
+    });
+}
+
 type PromisedInterface = {
+    reference: readline.Interface,
     question: (query: string) => Promise<string>
 };
 
 function promised(intf: readline.Interface): PromisedInterface {
     return {
+        reference: intf,
         question: (query: string): Promise<string> => {
             return new Promise((resolve) => {
                 intf.question(query, (answer) => {
@@ -283,4 +337,20 @@ function promised(intf: readline.Interface): PromisedInterface {
             });
         }
     };
+}
+
+class BooleanRef {
+    value: boolean;
+
+    constructor(value: boolean) {
+        this.value = value;
+    }
+
+    set(value: boolean) {
+        this.value = value;
+    }
+
+    get() {
+        return this.value;
+    }
 }
