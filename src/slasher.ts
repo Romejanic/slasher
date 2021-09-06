@@ -41,6 +41,11 @@ type DiscordChoice = {
     try {
         let data = await fs.promises.readFile("commands.json");
         commandData = JSON.parse(data.toString());
+
+        // remove json schema field
+        if(commandData["$schema"]) {
+            delete commandData["$schema"];
+        }
     } catch(e) {
         console.error(colors.red("Failed to load your command.json file!"));
         console.error();
@@ -343,10 +348,15 @@ function generateOptionJson(options: Types.OptionList) {
         let opt  = option as Types.Option;
 
         if(subg.subcommands) {
+            // is a subcommand group
             type = OPTION_TYPES["subcommand_group"];
+
         } else if(subc.options || subc.subcommand) {
+            // is a subcommand
             type = OPTION_TYPES["subcommand"];
+
         } else {
+            // is a regular option
             if(opt.choices) {
                 let first = opt.choices[Object.keys(opt.choices)[0]];
                 type = typeof first === "string" ? OPTION_TYPES["string"] : OPTION_TYPES["integer"];
@@ -359,13 +369,14 @@ function generateOptionJson(options: Types.OptionList) {
             if(opt.required) {
                 required = opt.required;
             }
-        }
 
-        optionData.push({
-            name: optionName,
-            description: option.description,
-            type, required, choices
-        });
+            // add option data
+            optionData.push({
+                name: optionName,
+                description: option.description,
+                type, required, choices
+            });
+        }
     }
 
     return optionData;
