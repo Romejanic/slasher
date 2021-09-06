@@ -105,7 +105,6 @@ dist
 
 # Builds
 build/
-*.js
 
 # Debug
 commands.json
