@@ -26,6 +26,10 @@ type DiscordChoice = {
     name: string,
     value: string | number
 };
+type ExistingCommand = {
+    id: string,
+    name: string
+};
 
 (async () => {
     console.log("S/ASHER " + require("../package.json").version + " by Romejanic");
@@ -158,11 +162,13 @@ type DiscordChoice = {
 
     let rest = new REST({ version: '9' }).setToken(token);
     try {
-        if(updateGlobal) {
-            await rest.put(Routes.applicationCommands(client), { body: data });
-        } else {
-            await rest.put(Routes.applicationGuildCommands(client, guild), { body: data });
-        }
+        let route = updateGlobal ? Routes.applicationCommands(client) : Routes.applicationGuildCommands(client, guild);
+
+        // let existingCommands: ExistingCommand[] = (await rest.get(route)) as ExistingCommand[];
+        // let commandsToDelete = existingCommands.filter(cmd => typeof commandData[cmd.name] === "undefined");
+        // console.log(existingCommands, commandsToDelete);
+
+        await rest.put(route, { body: data });
         console.log(colors.green.bold("Done! You should see the updated commands in Discord soon."));
     } catch(e) {
         console.log(colors.red.bold("Error updating commands with Discord!"));
