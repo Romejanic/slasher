@@ -350,11 +350,27 @@ function generateOptionJson(options: Types.OptionList) {
         if(subg.subcommands) {
             // is a subcommand group
             type = OPTION_TYPES["subcommand_group"];
-
+            
+            let optionsArray = generateOptionJson(subg.subcommands);
+            optionData.push({
+                name: optionName,
+                description: option.description,
+                type, options: optionsArray
+            });
         } else if(subc.options || subc.subcommand) {
             // is a subcommand
             type = OPTION_TYPES["subcommand"];
+            
+            let optionsArray: any[] = undefined;
+            if(subc.options) {
+                optionsArray = generateOptionJson(subc.options);
+            }
 
+            optionData.push({
+                name: optionName,
+                description: option.description,
+                type, options: optionsArray
+            });
         } else {
             // is a regular option
             if(opt.choices) {
