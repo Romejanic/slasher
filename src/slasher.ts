@@ -19,6 +19,11 @@ const OPTION_TYPES = {
 };
 const OPTION_TYPE_TEST = Object.keys(OPTION_TYPES).filter(s => s !== "subcommand" && s !== "subcommand_group");
 
+type DiscordChoice = {
+    name: string,
+    value: string | number
+};
+
 (async () => {
     console.log("S/ASHER " + require("../package.json").version + " by Romejanic");
     console.log();
@@ -136,7 +141,11 @@ const OPTION_TYPE_TEST = Object.keys(OPTION_TYPES).filter(s => s !== "subcommand
         return process.exit(0);
     }
 
+    // generate discord json and send request
+    let data = generateDiscordJson(commandData);
 
+    console.log();
+    console.log(JSON.stringify(data, null, 4));
 
 })();
 
@@ -300,6 +309,69 @@ function getPossibleOptionCommands(options: Types.OptionList, commands: string[]
         preview.pop();
     }
 }
+
+function generateDiscordJson(tree: Types.CommandTree) {
+    let commands = [];
+    for(let commandName in tree) {
+        let command = tree[commandName];
+        let options: any[];
+
+        if(typeof command.options === "object") {
+            options = generateOptionJson(command.options);
+        }
+
+        commands.push({
+            name: commandName,
+            description: command.description,
+            options: options ? options : undefined
+        });
+    }
+    return commands;
+}
+
+function generateOptionJson(options: Types.OptionList) {
+    let optionData = [];
+
+    for(let optionName in options) {
+        let option = options[optionName];
+        let type: number;
+        let required: boolean;
+        let choices: DiscordChoice[];
+
+        let subg = option as Types.SubcommandGroup;
+        let subc = option as Types.Subcommand;
+        let opt  = option as Types.Option;
+
+        if(subg.subcommands) {
+            type = OPTION_TYPES["subcommand_group"];
+        } else if(subc.options || subc.subcommand) {
+            type = OPTION_TYPES["subcommand"];
+        } else {
+            if(opt.choices) {
+                let first = opt.choices[Object.keys(opt.choices)[0]];
+                type = typeof first === "string" ? OPTION_TYPES["string"] : OPTION_TYPES["integer"];
+                choices = Object.keys(opt.choices).map((name): DiscordChoice => {
+                    return { name, value: opt.choices[name] };
+                });
+            } else {
+                type = OPTION_TYPES[opt.type];
+            }
+            if(opt.required) {
+                required = opt.required;
+            }
+        }
+
+        optionData.push({
+            name: optionName,
+            description: option.description,
+            type, required, choices
+        });
+    }
+
+    return optionData;
+}
+
+//------------------------------------------------------------------------------------//
 
 async function yesNo(query: string, intf: PromisedInterface) {
     let answer: string;
