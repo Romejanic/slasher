@@ -6,6 +6,9 @@ import * as readline from 'readline';
 import { Writable } from 'stream';
 import CommandPreview from './command-preview';
 
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
+
 const OPTION_TYPES = {
     "subcommand": 1,
     "subcommand_group": 2,
@@ -126,6 +129,7 @@ type DiscordChoice = {
     console.log();
 
     let token = await tokenInput(colors.yellow("Please enter your bot's token (that you would use to log into it): "), rl, muted);
+    let client = await rl.question(colors.yellow("Please enter the ID of your bot's account (right click on your bot and copy ID): "));
     let guild = "";
     if(!updateGlobal) {
         guild = await rl.question(colors.yellow("Please enter the ID of the server to update (right click on server and copy ID): "));
@@ -150,7 +154,24 @@ type DiscordChoice = {
     let data = generateDiscordJson(commandData);
 
     console.log();
-    console.log(JSON.stringify(data, null, 4));
+    console.log(colors.gray("Please wait..."));
+
+    let rest = new REST({ version: '9' }).setToken(token);
+    try {
+        if(updateGlobal) {
+            await rest.put(Routes.applicationCommands(client), { body: data });
+        } else {
+            await rest.put(Routes.applicationGuildCommands(client, guild), { body: data });
+        }
+        console.log(colors.green.bold("Done! You should see the updated commands in Discord soon."));
+    } catch(e) {
+        console.log(colors.red.bold("Error updating commands with Discord!"));
+        console.log(colors.red("Please check the following error as it may be an issue with your command tree."));
+        console.log();
+        console.log(colors.red(e));
+    }
+
+    process.exit(0);
 
 })();
 
@@ -350,7 +371,7 @@ function generateOptionJson(options: Types.OptionList) {
         if(subg.subcommands) {
             // is a subcommand group
             type = OPTION_TYPES["subcommand_group"];
-            
+
             let optionsArray = generateOptionJson(subg.subcommands);
             optionData.push({
                 name: optionName,
@@ -409,7 +430,7 @@ async function yesNo(query: string, intf: PromisedInterface) {
     return answer == "y" || answer == "yes";
 }
 
-function tokenInput(query: string, intf: PromisedInterface, muted: BooleanRef) {
+function tokenInput(query: string, intf: PromisedInterface, muted: BooleanRef): Promise<string> {
     return new Promise((resolve) => {
         intf.reference.question(query, (answer) => {
             muted.set(false);
