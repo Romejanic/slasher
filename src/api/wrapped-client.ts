@@ -1,5 +1,11 @@
-import { Client, ClientOptions, Intents, IntentsString } from 'discord.js';
+import {
+    Client, ClientOptions, Intents,
+    IntentsString, MessageEmbed,
+    InteractionReplyOptions, ClientEvents,
+    Awaited
+} from 'discord.js';
 import * as fs from 'fs';
+import { Command, CommandContext } from './command-context';
 
 export type SlasherClientOptions = ClientOptions & { token: string, useAuth: boolean };
 
@@ -15,7 +21,45 @@ export class SlasherClient extends Client {
 
     private addCommandHandler() {
         this.on("interactionCreate", (interaction) => {
-            
+            // ignore the interaction if it's not a command
+            if(!interaction.isCommand()) return;
+
+            // create command context object
+            let cmd = interaction as Command;
+            let ctx: CommandContext = {
+                name: cmd.commandName,
+                command: cmd,
+                isServer: cmd.inGuild(),
+                isDM: cmd.channel.type === "DM",
+                channel: cmd.channel,
+                user: cmd.user,
+                reply: function (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean = false) {
+                    let contentString  = typeof content === "string" ? content as string : undefined;
+                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
+                    let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
+                    if(contentOptions) {
+                        contentOptions.ephemeral = hidden;
+                        return cmd.reply(contentOptions);
+                    } else {
+                        return cmd.reply({
+                            content: contentString,
+                            embeds: contentEmbed ? [contentEmbed] : undefined,
+                            ephemeral: hidden
+                        });
+                    }
+                },
+                defer: function (hidden: boolean = false): Promise<void> {
+                    return cmd.deferReply({
+                        ephemeral: hidden 
+                    });
+                },
+                edit: function (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean = false) {
+                    throw new Error('Function not implemented.');
+                }
+            };
+
+            // emit the command event with the context
+            this.emit("command", ctx);
         });
     }
 
@@ -27,6 +71,38 @@ export class SlasherClient extends Client {
         }
     }
 
+}
+
+export declare interface SlasherClient {
+    on(event: "command", listener: (context: CommandContext) => void): this;
+    once(event: "command", listener: (context: CommandContext) => void): this;
+    off(event: "command", listener: (context: CommandContext) => void): this;
+    removeAllListeners(event: "command"): this;
+
+    // required for existing discord.js events to carry over
+    on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+    on<S extends string | symbol>(
+        event: Exclude<S, keyof ClientEvents>,
+        listener: (...args: any[]) => Awaited<void>,
+    ): this;
+
+    once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+    once<S extends string | symbol>(
+        event: Exclude<S, keyof ClientEvents>,
+        listener: (...args: any[]) => Awaited<void>,
+    ): this;
+
+    emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
+    emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: unknown[]): boolean;
+
+    off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+    off<S extends string | symbol>(
+        event: Exclude<S, keyof ClientEvents>,
+        listener: (...args: any[]) => Awaited<void>,
+    ): this;
+
+    removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
+    removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents>): this;
 }
 
 // gets the token from either the options or the auth.json file

@@ -1,5 +1,5 @@
 import { APIMessage } from 'discord-api-types';
-import { CommandInteraction, Guild, Channel, User, Message, MessageEmbed, InteractionReplyOptions } from 'discord.js';
+import { CommandInteraction, Guild, TextBasedChannels, User, Message, MessageEmbed, InteractionReplyOptions } from 'discord.js';
 
 export type Command = CommandInteraction;
 
@@ -18,7 +18,7 @@ export type CommandContext = {
     isDM: boolean,
 
     /** The text channel the command was run in */
-    channel: Channel,
+    channel: TextBasedChannels,
 
     /** The user who sent the command */
     user: User,
@@ -38,7 +38,7 @@ export type CommandContext = {
      * @param hidden Whether the content will be visible only to the sender
      * @returns a promise for the sent message
      */
-    reply: (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean) => Promise<Message | APIMessage | void>;
+    reply: (content: string | MessageEmbed | InteractionReplyOptions, hidden?: boolean) => Promise<Message | APIMessage | void>;
 
     /**
      * Defers a reply to the command. This causes Discord to display a
@@ -46,7 +46,7 @@ export type CommandContext = {
      * @param hidden Whether the prompt will be visible only to the sender
      * @returns a promise for when the prompt has been created
      */
-    defer: (hidden: boolean) => Promise<void>;
+    defer: (hidden?: boolean) => Promise<void>;
 
     /**
      * Edits the previous reply to the command.
@@ -54,6 +54,6 @@ export type CommandContext = {
      * @param hidden Whether the content should become visible to the sender only
      * @returns a promise for the sent message
      */
-    edit: (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean) => Promise<Message | APIMessage | void>;
+    edit: (content: string | MessageEmbed | InteractionReplyOptions, hidden?: boolean) => Promise<Message | APIMessage | void>;
 
 };
