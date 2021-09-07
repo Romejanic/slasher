@@ -1,6 +1,7 @@
 import { Client, ClientOptions, Intents, IntentsString } from 'discord.js';
+import * as fs from 'fs';
 
-export type SlasherClientOptions = ClientOptions & { token: string };
+export type SlasherClientOptions = ClientOptions & { token: string, useAuth: boolean };
 
 export class SlasherClient extends Client {
 
@@ -8,7 +9,7 @@ export class SlasherClient extends Client {
 
     constructor(options: SlasherClientOptions) {
         super(filterOptions(options));
-        this.botToken = options.token;
+        this.botToken = getBotToken(options);
         this.addCommandHandler();
     }
 
@@ -26,6 +27,17 @@ export class SlasherClient extends Client {
         }
     }
 
+}
+
+// gets the token from either the options or the auth.json file
+function getBotToken(options: SlasherClientOptions): string {
+    if(options.token) return options.token;
+    if(options.useAuth && fs.existsSync("auth.json")) {
+        let data = fs.readFileSync("auth.json");
+        let json = JSON.parse(data.toString());
+        return json.token;
+    }
+    return null;
 }
 
 // ensures the client options contains the GUILDS intent
