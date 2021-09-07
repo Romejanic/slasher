@@ -4,7 +4,8 @@ import {
     User, Message, MessageEmbed,
     InteractionReplyOptions,
     CommandInteractionOptionResolver,
-    GuildMember
+    GuildMember,
+    WebhookEditMessageOptions
 } from 'discord.js';
 import { SlasherClient } from './wrapped-client';
 
@@ -78,6 +79,6 @@ export interface CommandContext {
      * @param content The content to edit the reply with
      * @returns a promise for the sent message
      */
-    edit: (content: string | MessageEmbed | InteractionReplyOptions) => Promise<Message | APIMessage | void>;
+    edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message | APIMessage | void>;
 
 };
