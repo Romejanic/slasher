@@ -4,7 +4,105 @@
     "type": "object",
 
     "definitions": {
-
+        "subcommand": {
+            "type": "object",
+            "description": "Defines a new subcommand for this command.",
+            "anyOf": [
+                {
+                    "properties": {
+                        "options": {
+                            "type": "object",
+                            "description": "The options for this subcommand",
+                            "additionalProperties": {
+                                "$ref": "#/definitions/option"
+                            }
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "The description of this subcommand"
+                        }
+                    },
+                    "required": [ "options", "description" ]
+                },
+                {
+                    "properties": {
+                        "subcommand": {
+                            "const": true,
+                            "description": "Whether this option is a subcommand or not"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "The description of this subcommand"
+                        }
+                    },
+                    "required": [ "subcommand", "description" ] 
+                }
+            ]
+        },
+        "option": {
+            "type": "object",
+            "description": "Defines a new option for this command.",
+            "required": [
+                "description"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "The description of the option."
+                },
+                "required": {
+                    "type": "boolean",
+                    "description": "Whether this option is required or not."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The type of this option, not required if choices is present.",
+                    "anyOf": [
+                        { "const": "string", "description": "A string value" },
+                        { "const": "integer", "description": "A whole number (integer) value" },
+                        { "const": "boolean", "description": "A boolean value (true or false)" },
+                        { "const": "user", "description": "Allows user to choose a user to target" },
+                        { "const": "channel", "description": "Allows user to choose a channel to target" },
+                        { "const": "role", "description": "Allows user to choose a role to target" },
+                        { "const": "mentionable", "description": "Allows user to target anything mentionable (i.e. users and roles)" }
+                    ]
+                },
+                "choices": {
+                    "type": "object",
+                    "description": "A list of choices the user can choose and their assiociated value. Please not that creating choices will not allow any other values!",
+                    "additionalProperties": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "description": "A choice with a string value"
+                            },
+                            {
+                                "type": "integer",
+                                "description": "A choice with an integer value"
+                            }
+                        ]
+                    }
+                },
+                "subcommand": {
+                    "type": "boolean",
+                    "description": "Whether this option is a subcommand. Not required if options is present."
+                },
+                "options": {
+                    "type": "object",
+                    "description": "A list of options for the subcommand.",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/option"
+                    }
+                },
+                "subcommands": {
+                    "type": "object",
+                    "description": "A list of subcommands in this subcommand group.",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/subcommand"
+                    }
+                }
+            }
+        }
     },
 
     "additionalProperties": {
@@ -22,62 +120,7 @@
                 "type": "object",
                 "description": "A list of options the user can provide to the command.",
                 "additionalProperties": {
-                    "type": "object",
-                    "description": "Defines a new option for this command.",
-                    "required": [
-                        "description"
-                    ],
-                    "properties": {
-                        "description": {
-                            "type": "string",
-                            "description": "The description of the option."
-                        },
-                        "required": {
-                            "type": "boolean",
-                            "description": "Whether this option is required or not."
-                        },
-                        "type": {
-                            "type": "string",
-                            "description": "The type of this option, not required if choices is present.",
-                            "anyOf": [
-                                { "const": "string", "description": "A string value" },
-                                { "const": "integer", "description": "A whole number (integer) value" },
-                                { "const": "boolean", "description": "A boolean value (true or false)" },
-                                { "const": "user", "description": "Allows user to choose a user to target" },
-                                { "const": "channel", "description": "Allows user to choose a channel to target" },
-                                { "const": "role", "description": "Allows user to choose a role to target" },
-                                { "const": "mentionable", "description": "Allows user to target anything mentionable (i.e. users and roles)" }
-                            ]
-                        },
-                        "choices": {
-                            "type": "object",
-                            "description": "A list of choices the user can choose and their assiociated value. Please not that creating choices will not allow any other values!",
-                            "additionalProperties": {
-                                "anyOf": [
-                                    {
-                                        "type": "string",
-                                        "description": "A choice with a string value"
-                                    },
-                                    {
-                                        "type": "integer",
-                                        "description": "A choice with an integer value"
-                                    }
-                                ]
-                            }
-                        },
-                        "subcommand": {
-                            "type": "boolean",
-                            "description": "Whether this option is a subcommand. Not required if options is present."
-                        },
-                        "options": {
-                            "type": "object",
-                            "description": "A list of options for the subcommand."
-                        },
-                        "subcommands": {
-                            "type": "object",
-                            "description": "A list of subcommands in this subcommand group."
-                        }
-                    }
+                    "$ref": "#/definitions/option"
                 }
             }
         }
