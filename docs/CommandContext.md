@@ -60,7 +60,7 @@ Marks that the response to the message will be deferred (i.e. delayed until late
 
 e.g.
 ```js
-client.on("command", (ctx) => {
+client.on("command", async (ctx) => {
     await ctx.defer(); // defer the response
     
     // perform calculations
