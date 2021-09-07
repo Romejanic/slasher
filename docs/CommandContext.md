@@ -5,9 +5,9 @@
 1. [Import (types only)](#import-types-only)
 2. [Properties](#properties)
 3. [Methods](#methods)
-    1. [.reply(content, ?hidden)](#reply-content-hidden)
-    2. [.defer(?hidden)](#defer-hidden)
-    3. [.edit(content)](#edit-content)
+    1. [.reply(content, ?hidden)](#replycontent-hidden)
+    2. [.defer(?hidden)](#deferhidden)
+    3. [.edit(content)](#editcontent)
 
 ## Import (types only)
 TypeScript
