@@ -108,3 +108,6 @@ build/
 
 # Debug
 commands.json
+
+# Bot Authorisation File
+/auth.json

@@ -132,12 +132,41 @@ type ExistingCommand = {
     
     console.log();
 
-    let token = await tokenInput(colors.yellow("Please enter your bot's token (that you would use to log into it): "), rl, muted);
-    let client = await rl.question(colors.yellow("Please enter the ID of your bot's account (right click on your bot and copy ID): "));
-    let guild = "";
-    if(!updateGlobal) {
-        guild = await rl.question(colors.yellow("Please enter the ID of the server to update (right click on server and copy ID): "));
+    let token: string;
+    let client: string;
+    let guild: string = undefined;
+
+    // check if the auth.json file exists
+    if(fs.existsSync("auth.json")) {
+        // file exists, use it's details
+        let data = await fs.promises.readFile("auth.json");
+        let json = JSON.parse(data.toString());
+        token = json.token;
+        client = json.client;
+        guild = json.guild;
+
+        // if the user hasn't saved a guild id yet, we'll still need
+        // to prompt the user for it, then save it to the file
+        if(!guild && !updateGlobal) {
+            guild = await rl.question(colors.yellow("Please enter the ID of the server to update (right click on server and copy ID): "));
+
+            // write to json
+            json.guild = guild;
+            try {
+                await fs.promises.writeFile("auth.json", JSON.stringify(json, null, 4));
+            } catch(e) { /* this can just silently fail */ }
+        }
+    } else {
+        // doesn't exist, prompt the user for it
+        token = await tokenInput(colors.yellow("Please enter your bot's token (that you would use to log into it): "), rl, muted);
+        client = await rl.question(colors.yellow("Please enter the ID of your bot's account (right click on your bot and copy ID): "));
+        if(!updateGlobal) {
+            guild = await rl.question(colors.yellow("Please enter the ID of the server to update (right click on server and copy ID): "));
+        }
     }
+
+    // prompt user to save details
+    await askToSave(token, client, guild, rl);
 
     // confirm before performing the update
     console.log();
@@ -180,6 +209,55 @@ type ExistingCommand = {
     process.exit(0);
 
 })();
+
+async function askToSave(token: string, client: string, guild: string, intf: PromisedInterface) {
+    async function appendToGitIgnore() {
+        const gitignore = "\n# Bot Authorisation File\n/auth.json"; 
+        await new Promise<Error | void>((resolve, reject) => {
+            fs.appendFile(".gitignore", gitignore, (err) => {
+                if(err) reject(err);
+                else resolve();
+            });
+        });
+        console.log();
+        console.log(colors.red("## NOTE ##"));
+        console.log(colors.red("An entry for auth.json was added to your .gitignore file."));
+        console.log(colors.red.bold("If you use a different version control system, add it to the ignore file!"));
+        console.log(colors.red.bold("NEVER EVER EVER " + colors.underline.red.bold("EVER") + " commit auth.json to your repository!!!!"));
+        console.log(colors.red("Doing so could make your bot token public, and open it up to being hijacked. Not good!"));
+    }
+
+    if(fs.existsSync("auth.json")) {
+        // check if it's in the gitignore
+        if(await authFileNotInGitIgnore()) {
+            await appendToGitIgnore();
+        }
+    } else {
+        console.log();
+        let confirm = await yesNo(colors.yellow("Would you like to save these details for future use? (y/n):"), intf);
+        if(confirm) {
+            // append entry to gitignore
+            try {
+                await appendToGitIgnore();
+            } catch(e) {
+                console.log(colors.red.bold("Failed to append entry to gitignore file!"));
+                console.log(colors.bold("For security reasons the details were not saved"));
+                return;
+            }
+            // write json to file
+            await new Promise<Error | void>((resolve, reject) => {
+                let json = JSON.stringify({
+                    token, client, guild
+                }, null, 4);
+                fs.writeFile("auth.json", json, (err) => {
+                    if(err) reject(err);
+                    else resolve();
+                });
+            });
+            console.log(colors.green("Saved bot login details to auth.json!"));
+        }
+    }
+}
 
 function validateTree(tree: Types.CommandTree) {
     // define separate validation functions
@@ -479,4 +557,16 @@ class BooleanRef {
     get() {
         return this.value;
     }
+}
+
+async function authFileNotInGitIgnore(): Promise<boolean> {
+    const file = ".gitignore";
+    if(!fs.existsSync(file)) return Promise.resolve().then(_ => true);
+    
+    return new Promise((resolve, reject) => {
+        fs.readFile(file, (err, data) => {
+            if(err) reject(err);
+            resolve(!data.toString().includes("/auth.json"));
+        });     
+    });
 }
