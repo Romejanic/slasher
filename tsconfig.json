@@ -4,6 +4,12 @@
         "module": "commonjs",
         "target": "ES2015",
         "outDir": "build",
-        "rootDir": "src"
-    }
+        "rootDir": ".",
+        "declaration": false
+    },
+    "exclude": [
+        "build",
+        "build/**/*",
+        "*.d.ts"
+    ]
 }

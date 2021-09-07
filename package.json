@@ -17,7 +17,8 @@
         "url": "https://github.com/Romejanic/slasher.git"
     },
     "license": "MIT",
-    "main": "index.js",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "scripts": {
         "build": "tsc && npm link",
         "dev": "tsc -w"

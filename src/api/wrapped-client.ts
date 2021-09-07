@@ -2,12 +2,21 @@ import {
     Client, ClientOptions, Intents,
     IntentsString, MessageEmbed,
     InteractionReplyOptions, ClientEvents,
-    Awaited
+    Awaited,
+    BitFieldResolvable,
+    WebhookEditMessageOptions
 } from 'discord.js';
 import * as fs from 'fs';
 import { Command, CommandContext } from './command-context';
 
-export type SlasherClientOptions = ClientOptions & { token?: string, useAuth?: boolean };
+export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
+    /** The bot's login token, from the 'Bot' section of the application */
+    token?: string,
+    /** Whether to read the token from the auth.json file */
+    useAuth?: boolean,
+    /** The intents for this client, in most cases this can be left undefined */
+    intents?: BitFieldResolvable<IntentsString, number>
+};
 
 export class SlasherClient extends Client {
 
@@ -53,8 +62,18 @@ export class SlasherClient extends Client {
                         ephemeral: hidden 
                     });
                 },
-                edit: function (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean = false) {
-                    throw new Error('Function not implemented.');
+                edit: function (content: string | MessageEmbed | WebhookEditMessageOptions) {
+                    let contentString  = typeof content === "string" ? content as string : undefined;
+                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
+                    let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as WebhookEditMessageOptions : undefined;
+                    if(contentOptions) {
+                        return cmd.editReply(contentOptions);
+                    } else {
+                        return cmd.editReply({
+                            content: contentString,
+                            embeds: contentEmbed ? [contentEmbed] : undefined
+                        });
+                    }
                 }
             };
 
@@ -121,16 +140,17 @@ function getBotToken(options: SlasherClientOptions): string {
 
 // ensures the client options contains the GUILDS intent
 function filterOptions(options: SlasherClientOptions) {
+    let finalOptions = options as ClientOptions;
     if(!options.intents) {
-        options.intents = [ Intents.FLAGS.GUILDS ];
+        finalOptions.intents = [ Intents.FLAGS.GUILDS ];
     } else if(typeof options.intents === "number") {
-        options.intents = options.intents & Intents.FLAGS.GUILDS;
+        finalOptions.intents = options.intents & Intents.FLAGS.GUILDS;
     } else if(typeof options.intents === "string") {
         // this probably shouldn't be used, but maybe the user
         // needs a specific intent other than GUILDS? just leave
         // it be
-        options.intents = options.intents as IntentsString;
+        finalOptions.intents = options.intents as IntentsString;
     }
     delete options.token;
-    return options;
+    return finalOptions;
 }

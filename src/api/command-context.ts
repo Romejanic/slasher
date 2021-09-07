@@ -1,9 +1,9 @@
 import { APIMessage } from 'discord-api-types';
 import { CommandInteraction, Guild, TextBasedChannels, User, Message, MessageEmbed, InteractionReplyOptions } from 'discord.js';
 
-export type Command = CommandInteraction;
+export declare type Command = CommandInteraction;
 
-export type CommandContext = {
+export interface CommandContext {
 
     /** The name of the command */
     name: string,
@@ -51,9 +51,8 @@ export type CommandContext = {
     /**
      * Edits the previous reply to the command.
      * @param content The content to edit the reply with
-     * @param hidden Whether the content should become visible to the sender only
      * @returns a promise for the sent message
      */
-    edit: (content: string | MessageEmbed | InteractionReplyOptions, hidden?: boolean) => Promise<Message | APIMessage | void>;
+    edit: (content: string | MessageEmbed | InteractionReplyOptions) => Promise<Message | APIMessage | void>;
 
 };
