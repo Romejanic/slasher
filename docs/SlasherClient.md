@@ -30,7 +30,7 @@ let client = new SlasherClient({ token: ... });
 // automatically reads the token from auth.json
 let client = new SlasherClient({ useAuth: true });
 ```
-However this extends discord.js' [ClientOptions](https://discord.js.org/#/docs/main/stable/typedef/ClientOptions) interface, so any valid options for discord.js will also work (e.g. sharding).
+However the options parameter extends discord.js' [ClientOptions](https://discord.js.org/#/docs/main/stable/typedef/ClientOptions) interface, so any valid options for discord.js will also work (e.g. sharding).
 
 |Parameter|Type                                 |Description|
 |---------|-------------------------------------|-----------|
