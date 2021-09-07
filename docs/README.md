@@ -2,7 +2,7 @@
 Welcome to the official documentation page for Slasher!
 
 ## Guides
-- [My first bot](./guides/my-first-bot.md)
+- [Getting started](./guides/getting-started.md)
 
 ## API Reference
 |Type|Description|
