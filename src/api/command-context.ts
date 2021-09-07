@@ -1,5 +1,12 @@
 import { APIMessage } from 'discord-api-types';
-import { CommandInteraction, Guild, TextBasedChannels, User, Message, MessageEmbed, InteractionReplyOptions } from 'discord.js';
+import {
+    CommandInteraction, Guild, TextBasedChannels,
+    User, Message, MessageEmbed,
+    InteractionReplyOptions,
+    CommandInteractionOptionResolver,
+    GuildMember
+} from 'discord.js';
+import { SlasherClient } from './wrapped-client';
 
 export declare type Command = CommandInteraction;
 
@@ -8,8 +15,11 @@ export interface CommandContext {
     /** The name of the command */
     name: string,
 
-    /** The command object itself (for accessing options) */
+    /** The command object itself */
     command: Command,
+
+    /** The options passed into the command by the user */
+    options: CommandInteractionOptionResolver,
 
     /** Is the current message in a server text channel? */
     isServer: boolean,
@@ -28,9 +38,24 @@ export interface CommandContext {
         /** The server object */
         guild: Guild,
 
+        /** The guild member object for the sender of the command */
+        member: GuildMember,
+
+        /** If the sender is the owner of the server */
+        owner: boolean,
+
         /** Whether this user has the ADMINISTRATOR permission */
-        isUserAdmin: boolean
+        isUserAdmin: boolean,
+
+        /** The name of the server */
+        name: string,
+
+        /** The id of this server */
+        id: string,
     },
+
+    /** The bot client */
+    client: SlasherClient,
 
     /**
      * Replies to a command with the given content.

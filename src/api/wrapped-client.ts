@@ -38,10 +38,20 @@ export class SlasherClient extends Client {
             let ctx: CommandContext = {
                 name: cmd.commandName,
                 command: cmd,
+                options: cmd.options,
                 isServer: cmd.inGuild(),
                 isDM: cmd.channel.type === "DM",
                 channel: cmd.channel,
                 user: cmd.user,
+                client: this,
+                server: cmd.inGuild() ? {
+                    guild: cmd.guild,
+                    name: cmd.guild.name,
+                    id: cmd.guild.id,
+                    member: cmd.guild.members.resolve(cmd.user.id),
+                    owner: cmd.user.id === cmd.guild.ownerId,
+                    isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has("ADMINISTRATOR")
+                } : undefined,
                 reply: function (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean = false) {
                     let contentString  = typeof content === "string" ? content as string : undefined;
                     let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
