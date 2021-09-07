@@ -7,7 +7,7 @@ import {
 import * as fs from 'fs';
 import { Command, CommandContext } from './command-context';
 
-export type SlasherClientOptions = ClientOptions & { token: string, useAuth: boolean };
+export type SlasherClientOptions = ClientOptions & { token?: string, useAuth?: boolean };
 
 export class SlasherClient extends Client {
 
@@ -112,6 +112,9 @@ function getBotToken(options: SlasherClientOptions): string {
         let data = fs.readFileSync("auth.json");
         let json = JSON.parse(data.toString());
         return json.token;
+    } else {
+        console.warn("Could not find bot token in client options or auth.json!");
+        console.warn("You must either provide a token or set useAuth to true!");
     }
     return null;
 }
