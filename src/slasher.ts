@@ -238,7 +238,9 @@ async function askToSave(token: string, client: string, guild: string, intf: Pro
         if(confirm) {
             // append entry to gitignore
             try {
-                await appendToGitIgnore();
+                if(await authFileNotInGitIgnore()) {
+                    await appendToGitIgnore();
+                }
             } catch(e) {
                 console.log(colors.red.bold("Failed to append entry to gitignore file!"));
                 console.log(colors.bold("For security reasons the details were not saved"));
@@ -559,14 +561,10 @@ class BooleanRef {
     }
 }
 
-async function authFileNotInGitIgnore(): Promise<boolean> {
+async function authFileNotInGitIgnore() {
     const file = ".gitignore";
-    if(!fs.existsSync(file)) return Promise.resolve().then(_ => true);
+    if(!fs.existsSync(file)) return true;
     
-    return new Promise((resolve, reject) => {
-        fs.readFile(file, (err, data) => {
-            if(err) reject(err);
-            resolve(!data.toString().includes("/auth.json"));
-        });     
-    });
+    const data = await fs.promises.readFile(file);
+    return !data.toString().includes("/auth.json");
 }
