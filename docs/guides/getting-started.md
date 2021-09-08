@@ -45,7 +45,7 @@ The first thing you'll want to do is add this template:
 }
 ```
 
-The `$schema` property defines the URL of the JSON Schema for this file. With this property present, using an IDE like Visual Studio Code will provide auto-completion and suggestions based on the specification of the `commands.json` file.
+The `$schema` property defines the URL of the JSON Schema for this file. With this property present, using an IDE like [Visual Studio Code](https://code.visualstudio.com/) will provide auto-completion and suggestions based on the specification of the `commands.json` file.
 
 To add a command, you just create a new object property in this file with your command's name!
 ```json
@@ -141,7 +141,7 @@ You then need to create the client which will handle the events and logging into
 const client = new SlasherClient();
 ```
 
-The client constructor takes an argument, which is the [SlasherClientOptions](../api/SlasherClientOptions.md). However, since we saved our details in the `auth.json` file, the client can actually read from it to get the token automatically! To do this, just write
+The client constructor takes an argument, which is the [SlasherClientOptions](../api/SlasherClientOptions.md), and it is used to pass the token into the client. However, since we saved our details in the `auth.json` file, the client can actually read from it to get the token automatically! To do this, just write
 ```js
 const client = new SlasherClient({ useAuth: true });
 ```
