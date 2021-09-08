@@ -1,5 +1,23 @@
-# slasher
-A framework to simplify the creation of Discord bots.
+<!-- header template -->
+<br />
+<p align="center">
+  <a href="https://github.com/Romejanic/slasher">
+    <img src="docs/logo.png" alt="Logo" height="80">
+  </a>
+
+  <p align="center">
+    Frighteningly simple slash commands
+    <br />
+    <a href="https://github.com/Romejanic/slasher/blob/master/docs/README.md"><strong>Documentation »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/Romejanic/slasher/issues/new?assignees=Romejanic&labels=bug&template=bug_report.md&title=">Report Bug</a>
+    ·
+    <a href="https://github.com/Romejanic/slasher/issues/new?assignees=Romejanic&labels=enhancement&template=feature_request.md&title=">Request Feature</a>
+  </p>
+</p>
+
+Slasher is a framework to simplify the creation of Discord bots.
 
 Forget about `SlashCommandBuilder` and `REST`. Slasher takes care of all of it for you, and provides a simple, easy-to-use interface to build your bot using slash commands.
 
@@ -46,3 +64,6 @@ client.on("command", (ctx) => {
 
 client.login();
 ```
+
+## Thanks
+- [othneildrew](https://github.com/othneildrew/) for the [header template](https://github.com/othneildrew/Best-README-Template)

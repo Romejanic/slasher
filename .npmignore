@@ -1,0 +1,13 @@
+# testing
+/auth.json
+/commands.json
+
+# typescript source
+/index.ts
+/src
+
+# documentation
+/docs
+
+# github template
+/.github

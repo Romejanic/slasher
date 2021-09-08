@@ -377,18 +377,22 @@ function validateTree(tree: Types.CommandTree) {
 }
 
 function getPossibleCommands(tree: Types.CommandTree, commands: string[], preview: CommandPreview) {
-    for(let commandName in tree) {
-        preview.push(commandName);
-        let command = tree[commandName] as Types.Command;
+    // for the first release just keep it simple,
+    // only lists the command names
+    commands.push(...Object.keys(tree));
 
-        if(!command.options) {
-            commands.push(preview.get());
-        } else {
-            getPossibleOptionCommands(command.options, commands, preview);
-        }
+    // for(let commandName in tree) {
+    //     preview.push(commandName);
+    //     let command = tree[commandName] as Types.Command;
 
-        preview.pop();
-    }
+    //     if(!command.options) {
+    //         commands.push(preview.get());
+    //     } else {
+    //         getPossibleOptionCommands(command.options, commands, preview);
+    //     }
+
+    //     preview.pop();
+    // }
 }
 
 function getPossibleOptionCommands(options: Types.OptionList, commands: string[], preview: CommandPreview) {
