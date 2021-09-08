@@ -4,6 +4,7 @@ Welcome to the official documentation page for Slasher!
 ## Guides
 - [Getting started](./guides/getting-started.md)
 - [command.json format](./guides/command-json.md)
+- [Adding options](./guides/adding-options.md)
 
 ## API Reference
 |Type|Description|

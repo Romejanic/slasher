@@ -3,8 +3,11 @@
 **Table of contents**
 1. [Introduction](#introduction)
 2. [Basic options](#basic-options)
+    1. [Example](#example)
 3. [Subcommands](#subcommands)
+    1. [Example](#example-1)
 4. [Subcommand Groups](#subcommand-groups)
+    1. [Example](#example-2)
 5. [What's next?](#whats-next)
 
 ## Introduction
@@ -13,7 +16,7 @@ Adding options to a command is incredibly easy with Slasher. This guide will bri
 For an in-depth explanation of how to define options in a command, check out the [command.json guide](./command-json.md) first.
 
 ## Basic options
-For any options, you will need to use the `ctx.options` property on the `command` event. This property is an instance of [CommandInteractionOptionResolver](https://discord.js.org/#/docs/main/stable/class/CommandInteractionOptionResolver), so you an refer to that page for an in-depth reference.
+For any options, you will need to use the `ctx.options` property on the `command` event. This property is an instance of [CommandInteractionOptionResolver](https://discord.js.org/#/docs/main/stable/class/CommandInteractionOptionResolver), so you can refer to that page for an in-depth reference.
 
 But in summary, these are the most common methods you'll use:
 |Method|Return Type|Description|
