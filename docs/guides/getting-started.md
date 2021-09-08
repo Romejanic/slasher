@@ -1,4 +1,14 @@
 # Getting started
+
+**Table of Contents**
+1. [Introduction](#introduction)
+2. [Install the package](#install-the-package)
+3. [Create your command file](#create-your-command-file)
+4. [Run the slasher utility](#run-the-slasher-utility)
+5. [Writing your bot](#writing-your-bot)
+6. [What's next?](#whats-next)
+
+## Introduction
 Welcome! You're on your way to creating your first Discord bot with Slasher!
 
 Let's start with a little bit about what to expect:
@@ -16,13 +26,6 @@ Let's start with a little bit about what to expect:
 **When inviting your bot to your server** make sure it has the `bot` and `applications.commands` scopes, otherwise you won't be able to update the commands! ([see here](img/scopes.png))
 
 Finally we can get into programming!
-
-**Table of Contents**
-1. [Install the package](#install-the-package)
-2. [Create your command file](#create-your-command-file)
-3. [Run the slasher utility](#run-the-slasher-utility)
-4. [Writing your bot](#writing-your-bot)
-5. [What's next?](#whats-next)
 
 ## Install the package
 The first step is always to add the package to your project. This can be done with your package manager of choice. With npm, you type:
