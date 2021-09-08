@@ -8,7 +8,7 @@
   <p align="center">
     Frighteningly simple slash commands
     <br />
-    <a href="https://github.com/Romejanic/slasher/blob/master/docs/README.md"><strong>Documentation »</strong></a>
+    <a href="https://github.com/Romejanic/slasher/blob/master/docs/README.md">Documentation »</a>
     <br />
     <br />
     <a href="https://github.com/Romejanic/slasher/issues/new?assignees=Romejanic&labels=bug&template=bug_report.md&title=">Report Bug</a>
