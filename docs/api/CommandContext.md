@@ -25,7 +25,7 @@ import { CommandContext } from 'discord.js-slasher';
 |options|[CommandInteractionOptionResolver](https://discord.js.org/#/docs/main/stable/class/CommandInteractionOptionResolver)|no|The options passed into the command by the user|
 |isServer|boolean|no|Is the current message in a server text channel?|
 |isDM|boolean|no|Is the current message in the user's direct message channel?|
-|channel|[TextBasedChannels](https://discord.js.org/#/docs/main/stable/typedef/TextBasedChannels)|no|The channel which the command was run in|
+|?channel|[TextBasedChannels](https://discord.js.org/#/docs/main/stable/typedef/TextBasedChannels)|yes|The channel which the command was run in|
 |user|[User](https://discord.js.org/#/docs/main/stable/class/User)|no|The user who sent the command|
 |?server|object (see below)|yes|Server specific values. This object will be undefined if `isServer` is false, so ensure you check that you're in a server before using this object.|
 |client|[SlasherClient](./SlasherClient.md)|no|The bot's client object|

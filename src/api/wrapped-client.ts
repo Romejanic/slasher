@@ -40,7 +40,7 @@ export class SlasherClient extends Client {
                 command: cmd,
                 options: cmd.options,
                 isServer: cmd.inGuild(),
-                isDM: cmd.channel.type === "DM",
+                isDM: cmd.channel && cmd.channel.type === "DM",
                 channel: cmd.channel,
                 user: cmd.user,
                 client: this,
@@ -153,6 +153,8 @@ function filterOptions(options: SlasherClientOptions) {
     let finalOptions = options as ClientOptions;
     if(!options.intents) {
         finalOptions.intents = [ Intents.FLAGS.GUILDS ];
+    } else if (Array.isArray(options.intents)) {
+        finalOptions.intents = [ ...options.intents, Intents.FLAGS.GUILDS ];
     } else if(typeof options.intents === "number") {
         finalOptions.intents = options.intents & Intents.FLAGS.GUILDS;
     } else if(typeof options.intents === "string") {

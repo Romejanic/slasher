@@ -1,4 +1,4 @@
-import { APIMessage } from 'discord-api-types';
+import { APIMessage } from 'discord-api-types/v9';
 import {
     CommandInteraction, Guild, TextBasedChannels,
     User, Message, MessageEmbed,
@@ -29,7 +29,7 @@ export interface CommandContext {
     isDM: boolean,
 
     /** The text channel the command was run in */
-    channel: TextBasedChannels,
+    channel?: TextBasedChannels,
 
     /** The user who sent the command */
     user: User,
@@ -79,6 +79,6 @@ export interface CommandContext {
      * @param content The content to edit the reply with
      * @returns a promise for the sent message
      */
-    edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message | APIMessage | void>;
+    edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message | APIMessage>;
 
 };
