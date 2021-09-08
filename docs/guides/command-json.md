@@ -164,7 +164,7 @@ Following up on that, subcommands can also include options like normal commands.
 ```
 
 ## Subcommand Groups
-Subcommands groups allow you to bundle multiple related subcommands together. This example from [Discord's documentation](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups) illustrates how this might be useful:
+Subcommand groups allow you to bundle multiple related subcommands together. This example from [Discord's documentation](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups) illustrates how this might be useful:
 ![Example of subcommand groups](img/subcmdgroup.png)
 
 Subcommand groups are defined as an option of a command:
@@ -194,10 +194,12 @@ You must provide a `description`, and an object property called `subcommands`. T
                 "description": "A group of subcommands",
                 "subcommands": {
                     "alpha": {
-                        "description": "The first subcommand"
+                        "description": "The first subcommand",
+                        "subcommand": true
                     },
                     "beta": {
-                        "description": "The second subcommand"
+                        "description": "The second subcommand",
+                        "subcommand": true
                     }
                 }
             }
