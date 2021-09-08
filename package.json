@@ -27,7 +27,7 @@
         "dev": "tsc -w"
     },
     "bin": {
-        "slasher": "build/slasher.js"
+        "slasher": "build/src/slasher.js"
     },
     "dependencies": {
         "@discordjs/rest": "^0.1.0-canary.0",

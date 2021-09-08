@@ -32,7 +32,7 @@ type ExistingCommand = {
 };
 
 (async () => {
-    console.log("S/ASHER " + require("../package.json").version + " by Romejanic");
+    console.log("S/ASHER " + require("../../package.json").version + " by Romejanic");
     console.log();
 
     // check the command definition exists
