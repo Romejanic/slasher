@@ -1,6 +1,6 @@
 {
     "name": "discord.js-slasher",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "A framework to simplify the creation of Discord bots.",
     "keywords": [
         "discord",
