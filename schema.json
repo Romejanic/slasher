@@ -60,6 +60,7 @@
                     "anyOf": [
                         { "const": "string", "description": "A string value" },
                         { "const": "integer", "description": "A whole number (integer) value" },
+                        { "const": "number", "description": "A double number value" },
                         { "const": "boolean", "description": "A boolean value (true or false)" },
                         { "const": "user", "description": "Allows user to choose a user to target" },
                         { "const": "channel", "description": "Allows user to choose a channel to target" },
@@ -77,8 +78,8 @@
                                 "description": "A choice with a string value"
                             },
                             {
-                                "type": "integer",
-                                "description": "A choice with an integer value"
+                                "type": "number",
+                                "description": "A choice with an number value"
                             }
                         ]
                     }
