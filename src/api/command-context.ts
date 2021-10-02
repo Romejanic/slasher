@@ -5,7 +5,8 @@ import {
     InteractionReplyOptions,
     CommandInteractionOptionResolver,
     GuildMember,
-    WebhookEditMessageOptions
+    WebhookEditMessageOptions,
+    Permissions
 } from 'discord.js';
 import { SlasherClient } from './wrapped-client';
 
@@ -68,6 +69,9 @@ export interface CommandContext {
 
         /** The id of this server */
         id: string,
+
+        /** The user's permissions in this channel */
+        channelPermissions: Readonly<Permissions>
     },
 
     /** The bot client */

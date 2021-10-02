@@ -4,7 +4,8 @@ import {
     InteractionReplyOptions, ClientEvents,
     Awaited,
     BitFieldResolvable,
-    WebhookEditMessageOptions
+    WebhookEditMessageOptions,
+    GuildChannel
 } from 'discord.js';
 import * as fs from 'fs';
 import { Command, CommandContext, CommandOptions } from './command-context';
@@ -50,7 +51,8 @@ export class SlasherClient extends Client {
                     id: cmd.guild.id,
                     member: cmd.guild.members.resolve(cmd.user.id),
                     owner: cmd.user.id === cmd.guild.ownerId,
-                    isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has("ADMINISTRATOR")
+                    isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has("ADMINISTRATOR"),
+                    channelPermissions: (cmd.channel as GuildChannel).permissionsFor(cmd.user)
                 } : undefined,
                 reply: function (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean = false) {
                     let contentString  = typeof content === "string" ? content as string : undefined;
