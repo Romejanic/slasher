@@ -22,7 +22,7 @@ export class CommandOptions extends CommandInteractionOptionResolver {
      * @returns true if the option exists, false otherwise
      */
     has(option: string): boolean {
-        return typeof this.get(option) !== "undefined";
+        return this.get(option) !== null;
     }
 };
 
