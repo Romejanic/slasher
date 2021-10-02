@@ -21,7 +21,7 @@ import { CommandOptions } from 'discord.js-slasher';
 ```
 
 ## Properties
-This class does not have its own properties. Please [see here]() for a list of inherited properties.
+This class does not have its own properties. Please [see here](https://discord.js.org/#/docs/main/stable/class/CommandInteractionOptionResolver) for a list of inherited properties.
 
 
 ## Methods
@@ -29,7 +29,6 @@ This class does not have its own properties. Please [see here]() for a list of i
 ### .has(option)
 Determines if a given option has been set by the user. This can be used to cleanly check if an option exists, and act accordingly depending on the state.
 
-e.g.
 e.g.
 ```js
 client.on("command", async (ctx) => {

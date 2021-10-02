@@ -4,11 +4,13 @@
 1. [Introduction](#introduction)
 2. [Basic options](#basic-options)
     1. [Example](#example)
-3. [Subcommands](#subcommands)
+3. [Checking existence](#checking-existence)
     1. [Example](#example-1)
-4. [Subcommand Groups](#subcommand-groups)
+4. [Subcommands](#subcommands)
     1. [Example](#example-2)
-5. [What's next?](#whats-next)
+5. [Subcommand Groups](#subcommand-groups)
+    1. [Example](#example-3)
+6. [What's next?](#whats-next)
 
 ## Introduction
 Adding options to a command is incredibly easy with Slasher. This guide will briefly describe the `commands.json` data needed, but this guide will mostly focus on the code.
@@ -16,11 +18,12 @@ Adding options to a command is incredibly easy with Slasher. This guide will bri
 For an in-depth explanation of how to define options in a command, check out the [command.json guide](./command-json.md) first.
 
 ## Basic options
-For any options, you will need to use the `ctx.options` property on the `command` event. This property is an instance of [CommandInteractionOptionResolver](https://discord.js.org/#/docs/main/stable/class/CommandInteractionOptionResolver), so you can refer to that page for an in-depth reference.
+For any options, you will need to use the `ctx.options` property on the `command` event. This property is an instance of [CommandOptions](../api/CommandOptions.md), so you can refer to that page for an in-depth reference.
 
 But in summary, these are the most common methods you'll use:
 |Method|Return Type|Description|
 |------|-----------|-----------|
+|`has(name)`|boolean|Determines if the given option has been set|
 |`getString(name, ?required)`|?string|Gets a string option|
 |`getInteger(name, ?required)`|?number|Gets an integer option|
 |`getBoolean(name, ?required)`|?boolean|Gets a boolean option|
@@ -65,6 +68,51 @@ client.on("command", (ctx) => {
 
         // user.toString() creates a mention
         ctx.reply("Hello there " + user.toString() + "! :D");
+    }
+});
+```
+
+## Checking existence
+In some cases, you will want to take a different action depending on whether an option is set, whether that's altering your bots behaviour, or even just sending an error message stating that the option is required. For that you can use the `ctx.options.has()` method to determine if an option has been set or not.
+
+### Example
+**commands.json**
+```json
+{
+    "$schema": "https://raw.githubusercontent.com/Romejanic/slasher/master/schema.json",
+
+    "search": {
+        "description": "Searches the database for a keyword",
+        "options": {
+            "query": {
+                "description": "What to search for",
+                "type": "string",
+                "required": true
+            },
+            "page": {
+                "description": "The page number to show",
+                "type": "integer"
+            }
+        }
+    }
+}
+```
+**Code**
+```js
+client.on("command", (ctx) => {
+    if(ctx.name === "search") {
+        // get the search query
+        let query  = ctx.options.getString("query", true);
+        let pageNo = 0;
+
+        // check if there is a page number
+        if(ctx.options.has("page")) {
+            pageNo = ctx.options.getInteger("page");
+        }
+
+        // pass to the api
+        searchApi.search(query, pageNo);
+        ...
     }
 });
 ```
