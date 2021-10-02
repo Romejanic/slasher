@@ -39,6 +39,7 @@ import { CommandContext } from 'discord.js-slasher';
 |member|[GuildMember](https://discord.js.org/#/docs/main/stable/class/GuildMember)|The user's member object, for accessing roles and permissions|
 |owner|boolean|Whether the user is the owner of the server|
 |isUserAdmin|boolean|Whether the user has the `ADMINISTRATOR` permission on this server|
+|channelPermissions|[Permissions](https://discord.js.org/#/docs/main/stable/class/Permissions) (readonly)|The user's permissions in the channel which the message was sent in|
 
 
 
