@@ -54,12 +54,13 @@ Commands can also have up to 25 options. These are defined in the `options` prop
 ### Types
 When you create an option, you must provide a `description` (same as commands). You must also provide a `type` (unless you have `choices` defined).
 
-Valid types are: `string`, `integer`, `boolean`, `user`, `channel`, `role` or `mentionable`.
+Valid types are: `string`, `integer`, `number`, `boolean`, `user`, `channel`, `role` or `mentionable`.
 
 |Type|Description|
 |----|-----------|
 |string|A string of text|
 |integer|An integer value, only whole numbers can be entered|
+|number|An double number value, numbers with decimals can be entered|
 |boolean|A single true or false value|
 |user|Allows them to select a user to act on|
 |channel|Allows them to select a channel to act on|
@@ -85,7 +86,7 @@ You can also mark an option as `required`, which means it is mandatory for the u
 ```
 
 ### Choices
-You can also predefine a list of choices which the user can select from, similar in functionality to an enum. The only two valid types for these choices are `string` and `integer`.
+You can also predefine a list of choices which the user can select from, similar in functionality to an enum. The only two valid types for these choices are `string` and `number`.
 
 Please note that including choices will *force the user* to choose one of them, and will not allow arbitrary input. Keep this in mind when designing your command tree.
 
@@ -112,11 +113,11 @@ Choices are defined in the command tree with the `choices` property in the optio
 Choices are defined as a key-value pair. The key will be a human-readable display name which should be formatted nicely. The value will be the actual value which can be read in your code.
 
 ```jsonc
-// example of integer values
+// example of number values
 "choices": {
     "Choice A": 25,
     "Choice B": 50,
-    "Choice C": 100
+    "Choice C": 100.2
 }
 ```
 

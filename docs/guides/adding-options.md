@@ -26,6 +26,7 @@ But in summary, these are the most common methods you'll use:
 |`has(name)`|boolean|Determines if the given option has been set|
 |`getString(name, ?required)`|?string|Gets a string option|
 |`getInteger(name, ?required)`|?number|Gets an integer option|
+|`getNumber(name, ?required)`|?number|Gets a double number option|
 |`getBoolean(name, ?required)`|?boolean|Gets a boolean option|
 |`getUser(name, ?required)`|[?User](https://discord.js.org/#/docs/main/stable/class/User)|Gets a user option|
 |`getChannel(name, ?required)`|[?GuildChannel](https://discord.js.org/#/docs/main/stable/class/GuildChannel)|Gets a channel option|
