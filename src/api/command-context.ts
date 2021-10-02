@@ -11,6 +11,21 @@ import { SlasherClient } from './wrapped-client';
 
 export declare type Command = CommandInteraction;
 
+export class CommandOptions extends CommandInteractionOptionResolver {
+    constructor(parent: CommandInteractionOptionResolver) {
+        super(parent.client, Array(...parent.data));
+    }
+
+    /**
+     * Queries whether an option with the given name is set by the user.
+     * @param option the name of the option to check
+     * @returns true if the option exists, false otherwise
+     */
+    has(option: string): boolean {
+        return typeof this.get(option) !== "undefined";
+    }
+};
+
 export interface CommandContext {
 
     /** The name of the command */
@@ -20,7 +35,7 @@ export interface CommandContext {
     command: Command,
 
     /** The options passed into the command by the user */
-    options: CommandInteractionOptionResolver,
+    options: CommandOptions,
 
     /** Is the current message in a server text channel? */
     isServer: boolean,

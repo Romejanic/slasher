@@ -7,7 +7,7 @@ import {
     WebhookEditMessageOptions
 } from 'discord.js';
 import * as fs from 'fs';
-import { Command, CommandContext } from './command-context';
+import { Command, CommandContext, CommandOptions } from './command-context';
 
 export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
     /** The bot's login token, from the 'Bot' section of the application */
@@ -38,7 +38,7 @@ export class SlasherClient extends Client {
             let ctx: CommandContext = {
                 name: cmd.commandName,
                 command: cmd,
-                options: cmd.options,
+                options: new CommandOptions(interaction.options),
                 isServer: cmd.inGuild(),
                 isDM: cmd.channel && cmd.channel.type === "DM",
                 channel: cmd.channel,
