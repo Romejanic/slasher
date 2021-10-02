@@ -31,7 +31,7 @@ npm i -s discord.js discord.js-slasher
 
 Install the CLI tool for another language
 ```sh
-npm i -g dicord.js-slasher
+npm i -g discord.js-slasher
 ```
 
 ## Example
