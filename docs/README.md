@@ -13,3 +13,4 @@ Welcome to the official documentation page for Slasher!
 |[SlasherClientOptions](./api/SlasherClientOptions.md)|The options class for creating the bot client|
 |[CommandContext](./api/CommandContext.md)|The context object passed by the `command` event|
 |[Command](./api/Command.md)|Alias type for [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction)|
+|[CommandOptions](./api/CommandOptions.md)|Class for accessing the options set by the user.|
