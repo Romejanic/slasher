@@ -18,7 +18,8 @@ const OPTION_TYPES = {
     "user": 6,
     "channel": 7,
     "role": 8,
-    "mentionable": 9
+    "mentionable": 9,
+    "number": 10
 };
 const OPTION_TYPE_TEST = Object.keys(OPTION_TYPES).filter(s => s !== "subcommand" && s !== "subcommand_group");
 
@@ -107,6 +108,15 @@ type ExistingCommand = {
     if(!confirm) {
         console.log();
         console.log(colors.red("Cancelled"));
+        return process.exit(0);
+    }
+
+    // perform dry run if option is passed
+    if(process.argv.includes("--dry-run")) {
+        let data = generateDiscordJson(commandData);
+        let json = JSON.stringify(data, null, 4);
+        console.log(colors.gray("Dry run complete, generated Discord JSON:"));
+        console.log(colors.yellow(json));
         return process.exit(0);
     }
 
@@ -278,21 +288,18 @@ function validateTree(tree: Types.CommandTree) {
     }
     function validateOption(prefix: string, option: Types.Option) {
         if(typeof option.required !== "undefined" && typeof option.required !== "boolean") return prefix + "required must be boolean";
+        let type = null;
         if(option.choices) {
             if(typeof option.choices !== "object") return prefix + "choices must be object";
-            let type = null;
             for(let choiceName in option.choices) {
                 if(typeof choiceName !== "string") return prefix + "choice \"" + choiceName + "\": name must be string";
                 if(typeof option.choices[choiceName] !== "string" && typeof option.choices[choiceName] !== "number") {
-                    return prefix + "choice \"" + choiceName + "\": value must be string or integer";
+                    return prefix + "choice \"" + choiceName + "\": value must be string or number";
                 }
                 if(type) {
                     if(typeof option.choices[choiceName] !== type) return prefix + "choice \"" + choiceName + "\": all choices must have same type";
                 } else {
                     type = typeof option.choices[choiceName];
-                }
-                if(typeof option.choices[choiceName] === "number" && !Number.isInteger(option.choices[choiceName])) {
-                    return prefix + "choice \"" + choiceName + "\": numeric value must be integer";
                 }
             }
         } else if(typeof option.type !== "string") {
@@ -486,7 +493,7 @@ function generateOptionJson(options: Types.OptionList) {
             // is a regular option
             if(opt.choices) {
                 let first = opt.choices[Object.keys(opt.choices)[0]];
-                type = typeof first === "string" ? OPTION_TYPES["string"] : OPTION_TYPES["integer"];
+                type = typeof first === "string" ? OPTION_TYPES["string"] : OPTION_TYPES["number"];
                 choices = Object.keys(opt.choices).map((name): DiscordChoice => {
                     return { name, value: opt.choices[name] };
                 });
