@@ -5,7 +5,7 @@
         "target": "ES2015",
         "outDir": "build",
         "rootDir": ".",
-        "declaration": false
+        "declaration": true
     },
     "exclude": [
         "build",
