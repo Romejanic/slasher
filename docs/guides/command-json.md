@@ -7,6 +7,7 @@
     1. [Types](#types)
     2. [Required Options](#required-options)
     3. [Choices](#choices)
+    4. [Channel Types](#channel-types)
 4. [Subcommands](#subcommands)
 5. [Subcommand Groups](#subcommand-groups)
 6. [What's next?](#whats-next)
@@ -52,7 +53,7 @@ Commands can also have up to 25 options. These are defined in the `options` prop
 ```
 
 ### Types
-When you create an option, you must provide a `description` (same as commands). You must also provide a `type` (unless you have `choices` defined).
+When you create an option, you must provide a `description` (same as commands). You must also provide a `type` (unless you have `choices` or `channel_types` defined).
 
 Valid types are: `string`, `integer`, `number`, `boolean`, `user`, `channel`, `role` or `mentionable`.
 
@@ -118,6 +119,46 @@ Choices are defined as a key-value pair. The key will be a human-readable displa
     "Choice A": 25,
     "Choice B": 50,
     "Choice C": 100.2
+}
+```
+
+### Channel Types
+When selecting channels with `type: channel`, by default the user can select any channel they have access to (within a server), which may lead to undesired/unsupported channel types being chosen. Therefore you can optionally specify a limited set of channel types which the user can choose from, and Discord will automatically filter out any other channels.
+
+This greatly improves the user experience, as you can allow Discord to do input validation on channel types, rather than writing code to check it yourself and potentially introducing bugs.
+
+Currently, there are 11 valid channel types defined in the schema: `text`, `dm`, `voice`, `group_dm`, `category`, `announcements`, `store`, `announcement_thread`, `public_thread`, `private_thread` and `stage`.
+
+|Type|Description|
+|----|-----------|
+|text|A text channel within a server|
+|dm|A direct message channel with a user|
+|voice|A voice channel within a server|
+|group_dm|A direct message channel with multiple users|
+|category|A category channel containing many channels|
+|announcements|An announcement channel on a server which can be followed|
+|store|A channel for game developers to sell their games|
+|announcement_thread|A thread channel created from an announcement channel|
+|public_thread|A public thread channel created from a text channel|
+|private_thread|A private thread channel created from a text channel|
+|stage|A stage voice channel with speakers and an audience|
+
+Similar to [choices](#choices), you also do not need to specify the option `type` property, as Slasher will automatically infer that the option is a `channel`.
+
+```json
+{
+    "lock": {
+        "description": "Locks a text channel for 1 minute",
+        "options": {
+            "channel": {
+                "description": "The channel to lock",
+                "channel_types": [
+                    "text", "public_thread", "private_thread"
+                ],
+                "required": true
+            }
+        }
+    }
 }
 ```
 
