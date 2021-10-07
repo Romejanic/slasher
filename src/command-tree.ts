@@ -11,10 +11,13 @@ export type Command = {
     options?: OptionList
 };
 
+type ChannelType = "text" | "dm" | "voice" | "group_dm" | "category" | "announcements" | "store" | "announcement_thread" | "public_thread" | "private_thread" | "stage";
+
 export type Option = {
     description: string,
     required?: boolean,
     type?: "string" | "integer" | "boolean" | "user" | "channel" | "role" | "mentionable",
+    channel_types?: ChannelType[],
     choices?: {
         [name: string]: string | number
     }

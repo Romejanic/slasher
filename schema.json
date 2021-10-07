@@ -56,7 +56,7 @@
                 },
                 "type": {
                     "type": "string",
-                    "description": "The type of this option, not required if choices is present.",
+                    "description": "The type of this option, not required if choices or channel_types is present.",
                     "anyOf": [
                         { "const": "string", "description": "A string value" },
                         { "const": "integer", "description": "A whole number (integer) value" },
@@ -70,8 +70,10 @@
                 },
                 "channel_types": {
                     "type": "array",
-                    "description": "The list of valid channel types the user can choose, if this option is a channel",
+                    "description": "The list of valid channel types the user can choose if this option is a channel",
                     "uniqueItems": true,
+                    "minItems": 1,
+                    "maxItems": 11,
                     "items": {
                         "anyOf": [
                             { "const": "text", "description": "A text channel within a server" },

@@ -23,6 +23,21 @@ const OPTION_TYPES = {
 };
 const OPTION_TYPE_TEST = Object.keys(OPTION_TYPES).filter(s => s !== "subcommand" && s !== "subcommand_group");
 
+const CHANNEL_TYPES = {
+    "text": 0,
+    "dm": 1,
+    "voice": 2,
+    "group_dm": 3,
+    "category": 4,
+    "announcements": 5,
+    "store": 6,
+    "announcement_thread": 10,
+    "public_thread": 11,
+    "private_thread": 12,
+    "stage": 13
+};
+const NUM_CHANNEL_TYPES = Object.keys(CHANNEL_TYPES).length;
+
 type DiscordChoice = {
     name: string,
     value: string | number
@@ -302,6 +317,13 @@ function validateTree(tree: Types.CommandTree) {
                     type = typeof option.choices[choiceName];
                 }
             }
+        } else if(option.channel_types) {
+            if(!Array.isArray(option.channel_types)) return prefix + "channel_types must be array";
+            if(option.channel_types.length < 1 || option.channel_types.length > NUM_CHANNEL_TYPES) return prefix + "channel_types must have between 1 and " + NUM_CHANNEL_TYPES + " types";
+            if(option.channel_types.some(k => typeof CHANNEL_TYPES[k] === "undefined")) return prefix + "each element of channel_types must be one of: " + Object.keys(CHANNEL_TYPES).join(", ");
+            // get unique values only
+            option.type = "channel";
+            option.channel_types = option.channel_types.filter((v,i,s) => s.indexOf(v) === i);
         } else if(typeof option.type !== "string") {
             return prefix + "type must be defined if no choices are provided";
         } else if(!OPTION_TYPE_TEST.includes(option.type)) {
