@@ -322,7 +322,6 @@ function validateTree(tree: Types.CommandTree) {
             if(option.channel_types.length < 1 || option.channel_types.length > NUM_CHANNEL_TYPES) return prefix + "channel_types must have between 1 and " + NUM_CHANNEL_TYPES + " types";
             if(option.channel_types.some(k => typeof CHANNEL_TYPES[k] === "undefined")) return prefix + "each element of channel_types must be one of: " + Object.keys(CHANNEL_TYPES).join(", ");
             // get unique values only
-            option.type = "channel";
             option.channel_types = option.channel_types.filter((v,i,s) => s.indexOf(v) === i);
         } else if(typeof option.type !== "string") {
             return prefix + "type must be defined if no choices are provided";
@@ -482,6 +481,7 @@ function generateOptionJson(options: Types.OptionList) {
         let type: number;
         let required: boolean;
         let choices: DiscordChoice[];
+        let channel_types: number[];
 
         let subg = option as Types.SubcommandGroup;
         let subc = option as Types.Subcommand;
@@ -519,6 +519,9 @@ function generateOptionJson(options: Types.OptionList) {
                 choices = Object.keys(opt.choices).map((name): DiscordChoice => {
                     return { name, value: opt.choices[name] };
                 });
+            } else if(opt.channel_types) {
+                type = OPTION_TYPES["channel"];
+                channel_types = opt.channel_types.map(v => CHANNEL_TYPES[v]);
             } else {
                 type = OPTION_TYPES[opt.type];
             }
@@ -530,7 +533,7 @@ function generateOptionJson(options: Types.OptionList) {
             optionData.push({
                 name: optionName,
                 description: option.description,
-                type, required, choices
+                type, required, choices, channel_types
             });
         }
     }
