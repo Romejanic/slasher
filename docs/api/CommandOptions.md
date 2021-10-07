@@ -1,21 +1,15 @@
 # CommandOptions
-`CommandOptions` is a wrapper class for discord.js' built in [CommandInteractionOptionResolver](https://discord.js.org/#/docs/main/stable/class/CommandInteractionOptionResolver) class, with some added methods to improve the user experience of getting options.
+`CommandOptions` is an extension for discord.js' built in [CommandInteractionOptionResolver](https://discord.js.org/#/docs/main/stable/class/CommandInteractionOptionResolver) class, with some added methods to improve the user experience of getting options.
 
 Most of the properties and methods are shared with the parent class, and you should visit the pape above for a full list.
 
 **Table of Contents**
-1. [Import](#import)
+1. [Import (types only)](#import-types-only)
 2. [Properties](#properties)
 3. [Methods](#methods)
     1. [.has(option)](#hasoption)
 
-## Import
-JavaScript (pre ES6)
-```js
-const { CommandOptions } = require("discord.js-slasher");
-```
-
-TypeScript
+## Import (types only)
 ```typescript
 import { CommandOptions } from 'discord.js-slasher';
 ```

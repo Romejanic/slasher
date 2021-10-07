@@ -2,7 +2,7 @@ import {
     Client, ClientOptions, Intents,
     IntentsString, MessageEmbed,
     InteractionReplyOptions, ClientEvents,
-    Awaited,
+    Awaitable,
     BitFieldResolvable,
     WebhookEditMessageOptions,
     GuildChannel
@@ -39,7 +39,7 @@ export class SlasherClient extends Client {
             let ctx: CommandContext = {
                 name: cmd.commandName,
                 command: cmd,
-                options: new CommandOptions(interaction.options),
+                options: interaction.options,
                 isServer: cmd.inGuild(),
                 isDM: cmd.channel && cmd.channel.type === "DM",
                 channel: cmd.channel,
@@ -111,25 +111,25 @@ export declare interface SlasherClient {
     removeAllListeners(event: "command"): this;
 
     // required for existing discord.js events to carry over
-    on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+    on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
     on<S extends string | symbol>(
         event: Exclude<S, keyof ClientEvents>,
-        listener: (...args: any[]) => Awaited<void>,
+        listener: (...args: any[]) => Awaitable<void>,
     ): this;
 
-    once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+    once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
     once<S extends string | symbol>(
         event: Exclude<S, keyof ClientEvents>,
-        listener: (...args: any[]) => Awaited<void>,
+        listener: (...args: any[]) => Awaitable<void>,
     ): this;
 
     emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
     emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: unknown[]): boolean;
 
-    off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+    off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
     off<S extends string | symbol>(
         event: Exclude<S, keyof ClientEvents>,
-        listener: (...args: any[]) => Awaited<void>,
+        listener: (...args: any[]) => Awaitable<void>,
     ): this;
 
     removeAllListeners<K extends keyof ClientEvents>(event?: K): this;

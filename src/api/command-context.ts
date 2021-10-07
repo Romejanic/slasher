@@ -11,21 +11,22 @@ import {
 import { SlasherClient } from './wrapped-client';
 
 export declare type Command = CommandInteraction;
+export declare type CommandOptions = CommandInteractionOptionResolver;
 
-export class CommandOptions extends CommandInteractionOptionResolver {
-    constructor(parent: CommandInteractionOptionResolver) {
-        super(parent.client, Array(...parent.data));
+declare module "discord.js" {
+    interface CommandInteractionOptionResolver {
+        /**
+         * Queries whether an option with the given name is set by the user.
+         * @param option the name of the option to check
+         * @returns true if the option exists, false otherwise
+         */
+        has(option: string): boolean;
     }
+}
 
-    /**
-     * Queries whether an option with the given name is set by the user.
-     * @param option the name of the option to check
-     * @returns true if the option exists, false otherwise
-     */
-    has(option: string): boolean {
-        return this.get(option) !== null;
-    }
-};
+CommandInteractionOptionResolver.prototype.has = function(option: string) {
+    return this.get(option) !== null;
+}
 
 export interface CommandContext {
 
