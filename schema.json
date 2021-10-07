@@ -68,6 +68,26 @@
                         { "const": "mentionable", "description": "Allows user to target anything mentionable (i.e. users and roles)" }
                     ]
                 },
+                "channel_types": {
+                    "type": "array",
+                    "description": "The list of valid channel types the user can choose, if this option is a channel",
+                    "uniqueItems": true,
+                    "items": {
+                        "anyOf": [
+                            { "const": "text", "description": "A text channel within a server" },
+                            { "const": "dm", "description": "A direct message channel with a user" },
+                            { "const": "voice", "description": "A voice channel within a server" },
+                            { "const": "group_dm", "description": "A direct message channel with multiple users" },
+                            { "const": "category", "description": "A category channel containing many channels" },
+                            { "const": "announcements", "description": "An announcement channel on a server which can be followed" },
+                            { "const": "store", "description": "A channel for game developers to sell their games" },
+                            { "const": "announcement_thread", "description": "A thread channel created from an announcement channel" },
+                            { "const": "public_thread", "description": "A public thread channel created from a text channel" },
+                            { "const": "private_thread", "description": "A private thread channel created from a text channel" },
+                            { "const": "stage", "description": "A stage voice channel with speakers and an audience" }
+                        ]
+                    }
+                },
                 "choices": {
                     "type": "object",
                     "description": "A list of choices the user can choose and their assiociated value. Please not that creating choices will not allow any other values!",
