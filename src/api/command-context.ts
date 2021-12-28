@@ -1,6 +1,6 @@
 import { APIMessage } from 'discord-api-types/v9';
 import {
-    CommandInteraction, Guild, TextBasedChannels,
+    CommandInteraction, Guild, TextBasedChannel,
     User, Message, MessageEmbed,
     InteractionReplyOptions,
     CommandInteractionOptionResolver,
@@ -11,7 +11,7 @@ import {
 import { SlasherClient } from './wrapped-client';
 
 export declare type Command = CommandInteraction;
-export declare type CommandOptions = CommandInteractionOptionResolver;
+export declare type CommandOptions = typeof CommandInteraction.prototype.options;
 
 declare module "discord.js" {
     interface CommandInteractionOptionResolver {
@@ -46,7 +46,7 @@ export interface CommandContext {
     isDM: boolean,
 
     /** The text channel the command was run in */
-    channel?: TextBasedChannels,
+    channel?: TextBasedChannel,
 
     /** The user who sent the command */
     user: User,
@@ -99,6 +99,6 @@ export interface CommandContext {
      * @param content The content to edit the reply with
      * @returns a promise for the sent message
      */
-    edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message | APIMessage>;
+    edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message>;
 
 };
