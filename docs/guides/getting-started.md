@@ -7,6 +7,7 @@
 4. [Run the slasher utility](#run-the-slasher-utility)
 5. [Writing your bot](#writing-your-bot)
 6. [What's next?](#whats-next)
+7. [Common issues/errors](#common-issueserrors)
 
 ## Introduction
 Welcome! You're on your way to creating your first Discord bot with Slasher!
