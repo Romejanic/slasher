@@ -231,3 +231,13 @@ client.login(); // log into discord
 * Learn about [adding options](adding-options.md) to your commands
 * Learn about [the command.json format](command-json.md)
 * Learn to spice up your bot's responses with [MessageEmbeds](https://discordjs.guide/popular-topics/embeds.html)
+
+## Common issues/errors
+**Running ```npx slasher```**
+```
+Error updating commands with Discord!
+Please check the following error as it may be an issue with your command tree.
+
+DiscordAPIError[50001]: Missing Access
+```
+Ensure within the Discord Developer Portal (https://discord.com/developers/) that ```applications.commands``` is enabled in both ```OAuth2->General->Scopes``` and ```OAuth2->URL Generator->Scopes``` (when adding the bot to a server).
