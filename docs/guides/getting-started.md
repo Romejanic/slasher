@@ -241,4 +241,4 @@ Please check the following error as it may be an issue with your command tree.
 
 DiscordAPIError[50001]: Missing Access
 ```
-Ensure within the Discord Developer Portal (https://discord.com/developers/) that ```applications.commands``` is enabled in both ```OAuth2->General->Scopes``` and ```OAuth2->URL Generator->Scopes``` (when adding the bot to a server).
+Ensure within the [Discord Developer Portal](https://discord.com/developers/) that `applications.commands` is enabled in both `OAuth2 > General > Scopes` and `OAuth2 > URL Generator > Scopes` when adding the bot to a server.
