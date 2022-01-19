@@ -107,7 +107,7 @@ If you Git, make sure you **do not** remove the entry from your gitignore file.
 
 If you do not use Git, make sure you **add an entry** to your version control system's ignore file.
 
-**YOU CAN NEVER, EVER, EVER, EVER, EVER COMMIT THIS FILE TO YOUR REPOSITORY!!!!**
+### **YOU MUST NEVER, EVER, EVER, EVER, EVER COMMIT THIS FILE TO YOUR REPOSITORY!!!!**
 
 Doing so would make your bot token public!! This means that anyone who stumbles upon your repository can take your token and use it to impersonate your bot. Even if you delete it later, it can still be accessible to them through past commits, forcing you to regenerate it in your developer portal. So do yourself a favour and **NEVER** commit this file. And if you don't use Git, add it to your project's ignore file RIGHT NOW.
 
