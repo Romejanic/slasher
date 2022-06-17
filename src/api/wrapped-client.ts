@@ -31,7 +31,7 @@ export class SlasherClient extends Client {
     }
 
     private addCommandHandler() {
-        this.on("interactionCreate", (interaction) => {
+        this.on("interactionCreate", async (interaction) => {
             // ignore the interaction if it's not a command
             if(!interaction.isCommand()) return;
 
@@ -42,7 +42,7 @@ export class SlasherClient extends Client {
                 command: cmd,
                 options: interaction.options,
                 isServer: cmd.inGuild(),
-                isDM: cmd.channel && cmd.channel.type === "DM",
+                isDM: (await cmd.user.createDM()).id === interaction.channelId,
                 channel: cmd.channel,
                 user: cmd.user,
                 client: this,
