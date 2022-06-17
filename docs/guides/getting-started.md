@@ -7,6 +7,7 @@
 4. [Run the slasher utility](#run-the-slasher-utility)
 5. [Writing your bot](#writing-your-bot)
 6. [What's next?](#whats-next)
+7. [Common issues/errors](#common-issueserrors)
 
 ## Introduction
 Welcome! You're on your way to creating your first Discord bot with Slasher!
@@ -106,7 +107,7 @@ If you Git, make sure you **do not** remove the entry from your gitignore file.
 
 If you do not use Git, make sure you **add an entry** to your version control system's ignore file.
 
-**YOU CAN NEVER, EVER, EVER, EVER, EVER COMMIT THIS FILE TO YOUR REPOSITORY!!!!**
+### **YOU MUST NEVER, EVER, EVER, EVER, EVER COMMIT THIS FILE TO YOUR REPOSITORY!!!!**
 
 Doing so would make your bot token public!! This means that anyone who stumbles upon your repository can take your token and use it to impersonate your bot. Even if you delete it later, it can still be accessible to them through past commits, forcing you to regenerate it in your developer portal. So do yourself a favour and **NEVER** commit this file. And if you don't use Git, add it to your project's ignore file RIGHT NOW.
 
@@ -231,3 +232,13 @@ client.login(); // log into discord
 * Learn about [adding options](adding-options.md) to your commands
 * Learn about [the command.json format](command-json.md)
 * Learn to spice up your bot's responses with [MessageEmbeds](https://discordjs.guide/popular-topics/embeds.html)
+
+## Common issues/errors
+**Running ```npx slasher```**
+```
+Error updating commands with Discord!
+Please check the following error as it may be an issue with your command tree.
+
+DiscordAPIError[50001]: Missing Access
+```
+Ensure within the [Discord Developer Portal](https://discord.com/developers/) that `applications.commands` is enabled in both `OAuth2 > General > Scopes` and `OAuth2 > URL Generator > Scopes` when adding the bot to a server.

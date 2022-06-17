@@ -2,10 +2,6 @@
 /auth.json
 /commands.json
 
-# typescript source
-/index.ts
-/src
-
 # documentation
 /docs/*
 !docs/logo.png
