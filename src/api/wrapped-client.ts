@@ -5,7 +5,8 @@ import {
     Awaitable,
     BitFieldResolvable,
     WebhookEditMessageOptions,
-    GuildChannel
+    GuildChannel,
+    Message
 } from 'discord.js';
 import * as fs from 'fs';
 import { Command, CommandContext, CommandOptions } from './command-context';
@@ -30,7 +31,7 @@ export class SlasherClient extends Client {
     }
 
     private addCommandHandler() {
-        this.on("interactionCreate", (interaction) => {
+        this.on("interactionCreate", async (interaction) => {
             // ignore the interaction if it's not a command
             if(!interaction.isCommand()) return;
 
@@ -41,7 +42,7 @@ export class SlasherClient extends Client {
                 command: cmd,
                 options: interaction.options,
                 isServer: cmd.inGuild(),
-                isDM: cmd.channel && cmd.channel.type === "DM",
+                isDM: (await cmd.user.createDM()).id === interaction.channelId,
                 channel: cmd.channel,
                 user: cmd.user,
                 client: this,
@@ -79,12 +80,12 @@ export class SlasherClient extends Client {
                     let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as WebhookEditMessageOptions : undefined;
                     if(contentOptions) {
-                        return cmd.editReply(contentOptions);
+                        return cmd.editReply(contentOptions).then(m => m as Message);
                     } else {
                         return cmd.editReply({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined
-                        });
+                        }).then(m => m as Message);
                     }
                 }
             };
