@@ -578,7 +578,8 @@ function generateOptionJson(options: Types.OptionList) {
             optionData.push({
                 name: optionName,
                 description: option.description,
-                type, required, choices, channel_types
+                type, required, choices, channel_types,
+                min_value: opt.min, max_value: opt.max
             });
         }
     }
