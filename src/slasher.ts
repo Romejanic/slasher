@@ -332,6 +332,10 @@ function validateTree(tree: Types.CommandTree) {
             return prefix + "type must be defined if no choices are provided";
         } else if(!OPTION_TYPE_TEST.includes(option.type)) {
             return prefix + "type must be one of: " + OPTION_TYPE_TEST.join(", ");
+        } else if(option.type === "integer" || option.type === "number") {
+            if(option.min && typeof option.min !== "number") return prefix + "min must be a number";
+            if(option.max && typeof option.max !== "number") return prefix + "max must be a number";
+            if(option.max < option.min) return prefix + "min should be smaller than max";
         }
         return null;
     }

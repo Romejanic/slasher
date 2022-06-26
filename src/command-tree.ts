@@ -36,11 +36,13 @@ type Permission =
 export type Option = {
     description: string,
     required?: boolean,
-    type?: "string" | "integer" | "boolean" | "user" | "channel" | "role" | "mentionable",
+    type?: "string" | "integer" | "number" | "boolean" | "user" | "channel" | "role" | "mentionable",
     channel_types?: ChannelType[],
     choices?: {
         [name: string]: string | number
-    }
+    },
+    min?: number,
+    max?: number
 };
 
 export type Subcommand = {
