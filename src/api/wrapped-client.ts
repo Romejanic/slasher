@@ -55,36 +55,51 @@ export class SlasherClient extends Client {
                     isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has("ADMINISTRATOR"),
                     channelPermissions: (cmd.channel as GuildChannel).permissionsFor(cmd.user)
                 } : undefined,
-                reply: function (content: string | MessageEmbed | InteractionReplyOptions, hidden: boolean = false) {
+                reply: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
                     let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
                         contentOptions.ephemeral = hidden;
-                        return cmd.reply(contentOptions);
+                        return await cmd.reply(contentOptions);
                     } else {
-                        return cmd.reply({
+                        return await cmd.reply({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined,
                             ephemeral: hidden
                         });
                     }
                 },
-                defer: function (hidden: boolean = false): Promise<void> {
-                    return cmd.deferReply({
+                defer: async (hidden = false): Promise<void> => {
+                    return await cmd.deferReply({
                         ephemeral: hidden 
                     });
                 },
-                edit: function (content: string | MessageEmbed | WebhookEditMessageOptions) {
+                edit: async (content) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
                     let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as WebhookEditMessageOptions : undefined;
                     if(contentOptions) {
-                        return cmd.editReply(contentOptions).then(m => m as Message);
+                        return await cmd.editReply(contentOptions).then(m => m as Message);
                     } else {
-                        return cmd.editReply({
+                        return await cmd.editReply({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined
+                        }).then(m => m as Message);
+                    }
+                },
+                followUp: async (content, hidden = false) => {
+                    let contentString  = typeof content === "string" ? content as string : undefined;
+                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
+                    let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
+                    if(contentOptions) {
+                        contentOptions.ephemeral = hidden;
+                        return await cmd.followUp(contentOptions).then(m => m as Message);
+                    } else {
+                        return await cmd.followUp({
+                            content: contentString,
+                            embeds: contentEmbed ? [contentEmbed] : undefined,
+                            ephemeral: hidden
                         }).then(m => m as Message);
                     }
                 }

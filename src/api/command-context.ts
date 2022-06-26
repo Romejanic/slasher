@@ -101,4 +101,12 @@ export interface CommandContext {
      */
     edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message>;
 
+    /**
+     * Sends a separate follow-up message to the user regarding this command.
+     * @param content The content to follow up the command with
+     * @param hidden Whether the content will be visible only to the sender
+     * @returns a promise for the sent message
+     */
+    followUp: (content: string | MessageEmbed | InteractionReplyOptions, hidden?: boolean) => Promise<Message>;
+
 };
