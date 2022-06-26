@@ -217,7 +217,7 @@ type ExistingCommand = {
     console.log();
     console.log(colors.gray("Please wait..."));
 
-    let rest = new REST({ version: '9' }).setToken(token);
+    let rest = new REST({ version: '10' }).setToken(token);
     try {
         let route = updateGlobal ? Routes.applicationCommands(client) : Routes.applicationGuildCommands(client, guild);
 
@@ -503,6 +503,7 @@ function generateDiscordJson(tree: Types.CommandTree) {
         }
 
         commands.push({
+            type: 1,
             name: commandName,
             description: command.description,
             options: options ? options : undefined,
