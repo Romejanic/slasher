@@ -40,6 +40,7 @@ const CHANNEL_TYPES = {
 const NUM_CHANNEL_TYPES = Object.keys(CHANNEL_TYPES).length;
 
 const PERMISSION_TYPES = Object.keys(Permissions.FLAGS);
+const PERMISSION_LIST_URL = "https://github.com/Romejanic/slasher/blob/master/docs/guides/command-json.md#permission-list";
 
 type DiscordChoice = {
     name: string,
@@ -389,7 +390,7 @@ function validateTree(tree: Types.CommandTree) {
                 let permBits = new Permissions();
                 let uniquePerms = permissions.requires.filter((v,i,a) => a.indexOf(v) === i);
                 for(let v of uniquePerms) {
-                    if(!PERMISSION_TYPES.includes(v)) return track(`${cmdName} permissions.requires: invalid permission '${v}'. Please refer to <LINK> for a list of permissions.`);
+                    if(!PERMISSION_TYPES.includes(v)) return track(`${cmdName} permissions.requires: invalid permission '${v}'. Please refer to ${PERMISSION_LIST_URL} for a list of permissions.`);
                     permBits.add(v);
                 };
                 cmd.permissions.permission_value = permBits;
