@@ -123,6 +123,14 @@
                     "additionalProperties": {
                         "$ref": "#/definitions/subcommand"
                     }
+                },
+                "min": {
+                    "type": "number",
+                    "description": "The minimum value of this option (number and integer only)"
+                },
+                "max": {
+                    "type": "number",
+                    "description": "The maximum value of this option (number and integer only)"
                 }
             }
         },
