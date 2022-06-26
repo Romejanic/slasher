@@ -8,6 +8,7 @@
     1. [.reply(content, ?hidden)](#replycontent-hidden)
     2. [.defer(?hidden)](#deferhidden)
     3. [.edit(content)](#editcontent)
+    4. [.followUp(content, ?hidden)](#followupcontent-hidden)
 
 ## Import (types only)
 TypeScript
@@ -89,3 +90,14 @@ Edits the previous response to this interaction and overwrites it. The status of
 
 **Returns:** `Promise<`[Message](https://discord.js.org/#/docs/main/stable/class/Message)` | void>`
 A promise for the edited reply message
+
+### .followUp(content, ?hidden)
+Follows up the previous response with another one. Can be useful for sending a later response or giving an update to the user about the status of the previous request.
+
+|Parameter|Type                                 |Description|Required|
+|---------|-------------------------------------|-----------|------|
+|content|string or [MessageEmbed](https://discord.js.org/#/docs/main/stable/class/MessageEmbed) or [InteractionReplyOptions](https://discord.js.org/#/docs/main/stable/typedef/InteractionReplyOptions)|What to follow up the message with.|yes|
+|hidden|boolean|Whether this message will be visible only to the sender|no (default `false`)|
+
+**Returns:** `Promise<`[Message](https://discord.js.org/#/docs/main/stable/class/Message)`>`
+A promise for the sent follow up message
