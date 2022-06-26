@@ -102,6 +102,15 @@ export class SlasherClient extends Client {
                             ephemeral: hidden
                         }).then(m => m as Message);
                     }
+                },
+                modalResponse: async (modal, timeout = 10 * 60 * 1000, options) => {
+                    if(!options) {
+                        options = { time: timeout };
+                    }
+                    options.filter = options.filter ? options.filter : i => i.customId === modal.customId;
+                    options.time = options.time ? options.time : timeout;
+                    await cmd.showModal(modal);
+                    return await cmd.awaitModalSubmit(options);
                 }
             };
 
