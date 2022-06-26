@@ -491,10 +491,22 @@ function generateDiscordJson(tree: Types.CommandTree) {
             options = generateOptionJson(command.options);
         }
 
+        let default_member_permissions: string = undefined;
+        let dm_permission: boolean = undefined;
+
+        if(typeof command.permissions === "object") {
+            if(command.permissions.disabled) default_member_permissions = "0";
+            else if(command.permissions.permission_value) {
+                default_member_permissions = command.permissions.permission_value.bitfield.toString();
+            }
+            if(typeof command.permissions.dm === "boolean") dm_permission = command.permissions.dm;  
+        }
+
         commands.push({
             name: commandName,
             description: command.description,
-            options: options ? options : undefined
+            options: options ? options : undefined,
+            default_member_permissions, dm_permission
         });
     }
     return commands;
