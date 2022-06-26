@@ -1,3 +1,5 @@
+import { Permissions } from "discord.js";
+
 export type CommandTree = {
     [name: string]: Command
 };
@@ -9,12 +11,14 @@ export type OptionList = {
 export type PermissionList = {
     dm?: boolean,
     disabled?: boolean,
-    requires?: Permission[]
+    requires?: Permission[],
+    permission_value: Permissions
 };
 
 export type Command = {
     description: string,
-    options?: OptionList
+    options?: OptionList,
+    permissions?: PermissionList;
 };
 
 type ChannelType =
