@@ -10,7 +10,8 @@
     4. [Channel Types](#channel-types)
 4. [Subcommands](#subcommands)
 5. [Subcommand Groups](#subcommand-groups)
-6. [What's next?](#whats-next)
+6. [Permissions](#permissions)
+7. [What's next?](#whats-next)
 
 ## Schema
 For all `commands.json` files, you should include a `$schema` property to provide auto-complete and suggestions for your file, which will greatly improve your productivity and reduce your proneness to errors.
@@ -251,6 +252,85 @@ You must provide a `description`, and an object property called `subcommands`. T
 ```
 
 In Discord, this would create `/command group alpha` and `/command group beta`.
+
+## Permissions
+There might be situations where you don't want a particular command to be run by normal server members (e.g. a kick command, a config command, etc). Server admins can manage who can and can't run specific commands (by using `Manage Server > Interactions` on Discord).
+
+However you can set some default permissions on your commands, which is applied if a server owner hasn't chosen their own permissions. This also gives server admins more options, since it means they can give access to the command to users who don't strictly have the permissions you've chosen.
+
+Another advantage over just checking the permissions in your code is that Discord will hide commands from users who don't have permission to use them, which cleans up the command UI significantly, especially if you have lots of admin commands which most users can't use anyway.
+
+Permissions are controlled using the `permissions` option on a command.
+```jsonc
+{
+    "command": {
+        "description": "A simple command",
+        // controls command permissions
+        "permissions": {
+            "disabled": false,
+            "dm": true,
+            "requires": [
+                "MANAGE_GUILD", "MANAGE_MESSAGES"
+            ]
+        }
+    }
+}
+```
+
+The are three total options you can control. None of them are required.
+|Option|Type|Default|Description|
+|------|----|-------|-----------|
+|disabled|boolean|`false`|If set to true, only users with the Administrator permission can use this command and it is disabled for all other users.|
+|dm|boolean|`true`|If set to false, the command will not be available to use in direct messages with the bot, it will only be available in servers.|
+|requires|string[]|None|Defines a list of permissions which a user must have in order to see and access the command. The user must have all of the listed permissions to access the command. See the list below for a list of valid values.|
+
+### Permission List
+Here is a list of valid permission values which can be used in the `requires` array.
+
+|Permission|Description|
+|----------|-----------|
+|`ADMINISTRATOR`|Administrator, access to all permissions|
+|`CREATE_INSTANT_INVITE`|Ability to create server inites|
+|`KICK_MEMBERS`|Ability to kick members from a server|
+|`BAN_MEMBERS`|Ability to ban members from a server|
+|`MANAGE_GUILD`|Ability to edit server config and add bots|
+|`MANAGE_CHANNELS`|Ability to add/edit channels|
+|`MANAGE_NICKNAMES`|Ability to change user's nicknames|
+|`MANAGE_ROLES`|Ability to add/edit roles|
+|`MANAGE_WEBHOOKS`|Ability to add/edit webhooks|
+|`MANAGE_EMOJIS_AND_STICKERS`|Ability to add/edit emojis and stickers|
+|`MANAGE_EVENTS`|Ability to add/edit server events|
+|`MANAGE_THREADS`|Ability to edit and archive threads|
+|`MANAGE_MESSAGES`|Ability to delete or pin messages|
+|`ADD_REACTIONS`|Ability to add reactions to a message|
+|`VIEW_AUDIT_LOG`|Ability to view server audit log|
+|`PRIORITY_SPEAKER`|Whether the user is a priority speaker in voice channels|
+|`STREAM`|Whether the user can stream in voice channels|
+|`VIEW_CHANNEL`|Whether the user can view channels|
+|`SEND_MESSAGES`|Whether the user can send messages|
+|`SEND_TTS_MESSAGES`|Whether the user can send a text-to-speech message|
+|`EMBED_LINKS`|Whether the user can embed rich content into messages|
+|`ATTACH_FILES`|Whether the user can attach files to messages|
+|`READ_MESSAGE_HISTORY`|Whether the user can read the history of channels|
+|`MENTION_EVERYONE`|Whether the user can use @everyone in text channels|
+|`USE_EXTERNAL_EMOJIS`|Whether the user can use emojis from outside the server (Nitro users only)|
+|`USE_EXTERNAL_STICKERS`|Ability to use stickers from outside the server (Nitro users only)|
+|`VIEW_GUILD_INSIGHTS`|Whether the user can view the server insights page (alpha feature)|
+|`CONNECT`|Whether the user can join voice channels|
+|`SPEAK`|Whether the user can speak in voice channels|
+|`MUTE_MEMBERS`|Whether the user can mute other users in voice channels|
+|`DEAFEN_MEMBERS`|Whether the user can deafen other users in voice channels|
+|`MOVE_MEMBERS`|Whether the user can move members between voice channels|
+|`USE_VAD`|Whether the user can use voice-activity-detection in a voice channel|
+|`CHANGE_NICKNAME`|Whether the user can change their own nickname|
+|`USE_APPLICATION_COMMANDS`|Ability to use use slash commands at all|
+|`REQUEST_TO_SPEAK`|Ability to request to speak in stage channels|
+|`CREATE_PUBLIC_THREADS`|Ability to create public thread channels|
+|`CREATE_PRIVATE_THREADS`|Ability to create private thread channels|
+|`USE_PUBLIC_THREADS`|More information needed|`USE_PRIVATE_THREADS`|More information needed|
+|`SEND_MESSAGES_IN_THREADS`|Ability to send messages in thread channels|
+|`START_EMBEDDED_ACTIVITIES`|Ability to start an activity in a channel|
+|`MODERATE_MEMBERS`|Ability to timeout other users within the server|
 
 ## What's next?
 - Learn how to handle [command options](./adding-options.md)
