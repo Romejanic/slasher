@@ -123,7 +123,70 @@
                     "additionalProperties": {
                         "$ref": "#/definitions/subcommand"
                     }
+                },
+                "min": {
+                    "type": "number",
+                    "description": "The minimum value of this option (number and integer only)"
+                },
+                "max": {
+                    "type": "number",
+                    "description": "The maximum value of this option (number and integer only)"
                 }
+            }
+        },
+        "permission_list": {
+            "description": "A list of permissions required to use this command",
+            "type": "array",
+            "additionalItems": false,
+            "uniqueItems": true,
+            "minItems": 1,
+            "maxItems": 43,
+            "items": {
+                "anyOf": [
+                    { "const": "CREATE_INSTANT_INVITE" },
+                    { "const": "KICK_MEMBERS" },
+                    { "const": "BAN_MEMBERS" },
+                    { "const": "ADMINISTRATOR" },
+                    { "const": "MANAGE_CHANNELS" },
+                    { "const": "MANAGE_GUILD" },
+                    { "const": "ADD_REACTIONS" },
+                    { "const": "VIEW_AUDIT_LOG" },
+                    { "const": "PRIORITY_SPEAKER" },
+                    { "const": "STREAM" },
+                    { "const": "VIEW_CHANNEL" },
+                    { "const": "SEND_MESSAGES" },
+                    { "const": "SEND_TTS_MESSAGES" },
+                    { "const": "MANAGE_MESSAGES" },
+                    { "const": "EMBED_LINKS" },
+                    { "const": "ATTACH_FILES" },
+                    { "const": "READ_MESSAGE_HISTORY" },
+                    { "const": "MENTION_EVERYONE" },
+                    { "const": "USE_EXTERNAL_EMOJIS" },
+                    { "const": "VIEW_GUILD_INSIGHTS" },
+                    { "const": "CONNECT" },
+                    { "const": "SPEAK" },
+                    { "const": "MUTE_MEMBERS" },
+                    { "const": "DEAFEN_MEMBERS" },
+                    { "const": "MOVE_MEMBERS" },
+                    { "const": "USE_VAD" },
+                    { "const": "CHANGE_NICKNAME" },
+                    { "const": "MANAGE_NICKNAMES" },
+                    { "const": "MANAGE_ROLES" },
+                    { "const": "MANAGE_WEBHOOKS" },
+                    { "const": "MANAGE_EMOJIS_AND_STICKERS" },
+                    { "const": "USE_APPLICATION_COMMANDS" },
+                    { "const": "REQUEST_TO_SPEAK" },
+                    { "const": "MANAGE_EVENTS" },
+                    { "const": "MANAGE_THREADS" },
+                    { "const": "USE_PUBLIC_THREADS" },
+                    { "const": "CREATE_PUBLIC_THREADS" },
+                    { "const": "USE_PRIVATE_THREADS" },
+                    { "const": "CREATE_PRIVATE_THREADS" },
+                    { "const": "USE_EXTERNAL_STICKERS" },
+                    { "const": "SEND_MESSAGES_IN_THREADS" },
+                    { "const": "START_EMBEDDED_ACTIVITIES" },
+                    { "const": "MODERATE_MEMBERS" }
+                ]
             }
         }
     },
@@ -144,6 +207,25 @@
                 "description": "A list of options the user can provide to the command.",
                 "additionalProperties": {
                     "$ref": "#/definitions/option"
+                }
+            },
+            "permissions": {
+                "description": "Specifies the command's permission in various aspects of Discord.",
+                "type": "object",
+                "properties": {
+                    "disabled": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Is access to this command disabled by default?"
+                    },
+                    "dm": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Is this command allowed in DMs?"
+                    },
+                    "requires": {
+                        "$ref": "#/definitions/permission_list"
+                    }
                 }
             }
         }

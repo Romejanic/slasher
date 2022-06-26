@@ -6,7 +6,11 @@ import {
     CommandInteractionOptionResolver,
     GuildMember,
     WebhookEditMessageOptions,
-    Permissions
+    Permissions,
+    Modal,
+    ModalSubmitInteraction,
+    ModalOptions,
+    AwaitModalSubmitOptions
 } from 'discord.js';
 import { SlasherClient } from './wrapped-client';
 
@@ -100,5 +104,23 @@ export interface CommandContext {
      * @returns a promise for the sent message
      */
     edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message>;
+
+    /**
+     * Sends a separate follow-up message to the user regarding this command.
+     * @param content The content to follow up the command with
+     * @param hidden Whether the content will be visible only to the sender
+     * @returns a promise for the sent message
+     */
+    followUp: (content: string | MessageEmbed | InteractionReplyOptions, hidden?: boolean) => Promise<Message>;
+
+    /**
+     * Shows the given modal to the user and resolves with the response.
+     * Waits the specified number of milliseconds, or 10 minutes by default.
+     * @param modal The modal to show
+     * @param timeout The number of ms to wait for a response
+     * @param options Other options to set for the wait
+     * @returns a promise for the modal submission
+     */
+    modalResponse: (modal: Modal | ModalOptions, timeout?: number, options?: AwaitModalSubmitOptions<ModalSubmitInteraction>) => Promise<ModalSubmitInteraction>;
 
 };

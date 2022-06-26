@@ -231,6 +231,7 @@ client.login(); // log into discord
 * Check out the [CommandContext API Reference](../api/CommandContext.md) to see what you can do
 * Learn about [adding options](adding-options.md) to your commands
 * Learn about [the command.json format](command-json.md)
+* Learn about [controlling your command's permissions](command-json.md#permissions)
 * Learn to spice up your bot's responses with [MessageEmbeds](https://discordjs.guide/popular-topics/embeds.html)
 
 ## Common issues/errors

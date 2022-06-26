@@ -8,6 +8,7 @@ import CommandPreview from './command-preview';
 
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
+import { Permissions } from 'discord.js';
 
 const OPTION_TYPES = {
     "subcommand": 1,
@@ -37,6 +38,9 @@ const CHANNEL_TYPES = {
     "stage": 13
 };
 const NUM_CHANNEL_TYPES = Object.keys(CHANNEL_TYPES).length;
+
+const PERMISSION_TYPES = Object.keys(Permissions.FLAGS);
+const PERMISSION_LIST_URL = "https://github.com/Romejanic/slasher/blob/master/docs/guides/command-json.md#permission-list";
 
 type DiscordChoice = {
     name: string,
@@ -214,7 +218,7 @@ type ExistingCommand = {
     console.log();
     console.log(colors.gray("Please wait..."));
 
-    let rest = new REST({ version: '9' }).setToken(token);
+    let rest = new REST({ version: '10' }).setToken(token);
     try {
         let route = updateGlobal ? Routes.applicationCommands(client) : Routes.applicationGuildCommands(client, guild);
 
@@ -293,6 +297,7 @@ function validateTree(tree: Types.CommandTree) {
         if(!command.description) return prefix + "requires a description!";
         if(typeof command.description !== "string") return prefix + "description must be string";
         if(command.options && typeof command.options !== "object") return prefix + "options must be object";
+        if(command.permissions && typeof command.permissions !== "object") return prefix + "permissions must be object";
         return null;
     }
     function validateOptionBasic(prefix: string, option: Types.Option) {
@@ -327,6 +332,10 @@ function validateTree(tree: Types.CommandTree) {
             return prefix + "type must be defined if no choices are provided";
         } else if(!OPTION_TYPE_TEST.includes(option.type)) {
             return prefix + "type must be one of: " + OPTION_TYPE_TEST.join(", ");
+        } else if(option.type === "integer" || option.type === "number") {
+            if(option.min && typeof option.min !== "number") return prefix + "min must be a number";
+            if(option.max && typeof option.max !== "number") return prefix + "max must be a number";
+            if(option.max < option.min) return prefix + "min should be smaller than max";
         }
         return null;
     }
@@ -375,6 +384,26 @@ function validateTree(tree: Types.CommandTree) {
         }
     }
 
+    function validatePermissions(cmd: Types.Command, cmdName: string) {
+        const { permissions } = cmd;
+        if(typeof permissions.dm !== "undefined" && typeof permissions.dm !== "boolean") track(`${cmdName}: permissions.dm must be a boolean`);
+        if(typeof permissions.disabled !== "undefined" && typeof permissions.disabled !== "boolean") track(`${cmdName} permissions.disabled must be a boolean`);
+        if(permissions.requires) {
+            if(Array.isArray(permissions.requires)) {
+                if(permissions.requires.some(v => typeof v !== "string")) return track(`${cmdName} permissions.requires: each item must be a string`);
+                let permBits = new Permissions();
+                let uniquePerms = permissions.requires.filter((v,i,a) => a.indexOf(v) === i);
+                for(let v of uniquePerms) {
+                    if(!PERMISSION_TYPES.includes(v)) return track(`${cmdName} permissions.requires: invalid permission '${v}'. Please refer to ${PERMISSION_LIST_URL} for a list of permissions.`);
+                    permBits.add(v);
+                };
+                cmd.permissions.permission_value = permBits;
+            } else {
+                track(`${cmdName}: permissions.requires must be an array`);
+            }
+        }
+    }
+
     // add error tracking
     let errors = [];
     function track(error: string) {
@@ -395,9 +424,12 @@ function validateTree(tree: Types.CommandTree) {
         let cmdPrefix = "command \"" + commandName + "\": ";
         track(validateCommand(cmdPrefix, cmd));
 
-        // test options
+        // test options and permissions
         if(cmd.options) {
             validateOptions(cmd, commandName);
+        }
+        if(cmd.permissions) {
+            validatePermissions(cmd, commandName);
         }
     }
 
@@ -464,10 +496,23 @@ function generateDiscordJson(tree: Types.CommandTree) {
             options = generateOptionJson(command.options);
         }
 
+        let default_member_permissions: string = undefined;
+        let dm_permission: boolean = undefined;
+
+        if(typeof command.permissions === "object") {
+            if(command.permissions.disabled) default_member_permissions = "0";
+            else if(command.permissions.permission_value) {
+                default_member_permissions = command.permissions.permission_value.bitfield.toString();
+            }
+            if(typeof command.permissions.dm === "boolean") dm_permission = command.permissions.dm;  
+        }
+
         commands.push({
+            type: 1,
             name: commandName,
             description: command.description,
-            options: options ? options : undefined
+            options: options ? options : undefined,
+            default_member_permissions, dm_permission
         });
     }
     return commands;
@@ -533,7 +578,8 @@ function generateOptionJson(options: Types.OptionList) {
             optionData.push({
                 name: optionName,
                 description: option.description,
-                type, required, choices, channel_types
+                type, required, choices, channel_types,
+                min_value: opt.min, max_value: opt.max
             });
         }
     }

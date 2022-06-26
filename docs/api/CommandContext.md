@@ -8,6 +8,8 @@
     1. [.reply(content, ?hidden)](#replycontent-hidden)
     2. [.defer(?hidden)](#deferhidden)
     3. [.edit(content)](#editcontent)
+    4. [.followUp(content, ?hidden)](#followupcontent-hidden)
+    5. [.modalResponse(modal, ?timeout, ?options)](#modalresponsemodal-timeout-options)
 
 ## Import (types only)
 TypeScript
@@ -89,3 +91,26 @@ Edits the previous response to this interaction and overwrites it. The status of
 
 **Returns:** `Promise<`[Message](https://discord.js.org/#/docs/main/stable/class/Message)` | void>`
 A promise for the edited reply message
+
+### .followUp(content, ?hidden)
+Follows up the previous response with another one. Can be useful for sending a later response or giving an update to the user about the status of the previous request.
+
+|Parameter|Type                                 |Description|Required|
+|---------|-------------------------------------|-----------|------|
+|content|string or [MessageEmbed](https://discord.js.org/#/docs/main/stable/class/MessageEmbed) or [InteractionReplyOptions](https://discord.js.org/#/docs/main/stable/typedef/InteractionReplyOptions)|What to follow up the message with.|yes|
+|hidden|boolean|Whether this message will be visible only to the sender|no (default `false`)|
+
+**Returns:** `Promise<`[Message](https://discord.js.org/#/docs/main/stable/class/Message)`>`
+A promise for the sent follow up message
+
+### .modalResponse(modal, ?timeout, ?options)
+Shows the given modal to the user, and resolves once the user has submitted a response. If no response is given within either the timeout specified or a default of 10 minutes, an error is thrown. See [handling modals](../guides/handling-modals.md) for a full guide on how to use modals.
+
+|Parameter|Type                                 |Description|Required|
+|---------|-------------------------------------|-----------|------|
+|modal|[Modal](https://discord.js.org/#/docs/discord.js/stable/class/Modal) or [ModalOptions](https://discord.js.org/#/docs/discord.js/stable/typedef/ModalOptions)|The modal to show to the user.|yes|
+|timeout|number|The number of milliseconds to wait for a response before timing out.|no (default 10 minutes)|
+|options|[AwaitModalSubmitOptions](https://discord.js.org/#/docs/discord.js/stable/typedef/AwaitModalSubmitOptions)|Other options to send to the internal modal await. Some properties such as filter and time are overwritten.|no (default `null`)|
+
+**Returns:** `Promise<`[ModalSubmitInteraction](https://discord.js.org/#/docs/main/stable/class/ModalSubmitInteraction)`>`
+A promise for the modal submit interaction, which contains the entered text.
