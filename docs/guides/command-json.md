@@ -8,6 +8,7 @@
     2. [Required Options](#required-options)
     3. [Choices](#choices)
     4. [Channel Types](#channel-types)
+    5. [Min/Max Values](#minmax-values)
 4. [Subcommands](#subcommands)
 5. [Subcommand Groups](#subcommand-groups)
 6. [Permissions](#permissions)
@@ -157,6 +158,25 @@ Similar to [choices](#choices), you also do not need to specify the option `type
                     "text", "public_thread", "private_thread"
                 ],
                 "required": true
+            }
+        }
+    }
+}
+```
+
+### Min/Max Values
+For `integer` and `number` options exclusively, you can also limit them to a certain range by defining a `min` and `max` value on the option. These options can be used together to limit the numbers to a range, or independently to cap them at certain values. These values are inclusive, meaning the user can input the limit itself as a value (for example, a `min` of 5 will allow any values which are 5 or greater).
+
+```jsonc
+{
+    "roll": {
+        "description": "Rolls a dice",
+        "options": {
+            "faces": {
+                "description": "How many faces the dice has",
+                "type": "integer",
+                "min": 2,  // value must be >= 2
+                "max": 6   // value must be <= 6
             }
         }
     }
