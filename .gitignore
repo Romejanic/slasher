@@ -111,3 +111,6 @@ commands.json
 
 # Bot Authorisation File
 /auth.json
+
+# Old Slasher cli source
+src/old
