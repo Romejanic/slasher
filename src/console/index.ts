@@ -1,9 +1,12 @@
 import { StyleFunction } from "ansi-colors";
+import ObfuscatedWriteable from "./ObfuscatedWriteable";
 
 export default class Console {
     
-    constructor() {
+    private output: ObfuscatedWriteable;
 
+    constructor() {
+        this.output = new ObfuscatedWriteable(process.stdout);
     }
 
     /**
@@ -28,6 +31,12 @@ export default class Console {
         this.print(`${data}\n`, color);
     }
 
-
+    /**
+     * Allows input to hidden to avoid printing sensitive data (e.g. bot tokens).
+     * @param hidden Whether the input should be hidden or not.
+     */
+    setInputHidden(hidden: boolean) {
+        this.output.setObfuscated(hidden);
+    }
 
 }
