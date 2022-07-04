@@ -15,9 +15,13 @@ export default class ObfuscatedWriteable extends Writable {
                 if(!this.obfuscated) {
                     return this.parent.write(chunk, encoding, callback);
                 }
+
+                const ignored = ["\n", "\t", "\b"];
+
                 // replace all chars with "*"
-                let txt = Array(chunk).map(_ => "*").join("");
-                this.parent.write(txt, "ascii", callback);
+                let buf: string = Buffer.from(chunk, encoding).toString();
+                let txt: string = buf.split("").map(c => ignored.includes(c) ? c : "*").join("");
+                return this.parent.write(Buffer.from(txt), "ascii", callback);
             }
         });
         this.parent = parent;

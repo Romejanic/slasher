@@ -5,8 +5,11 @@ import Console from "./console";
 const console = new Console();
 
 async function main() {
-    console.println("SLASHER");
-    console.println("Coloured test!", colors.red);
+    await console.println("SLASHER");
+    await console.println("Coloured test!", colors.red);
+
+    console.setInputHidden(true);
+    await console.println("Hidden text output");
 }
 
 main();
