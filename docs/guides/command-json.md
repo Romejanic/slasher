@@ -1,4 +1,4 @@
-# command.json format
+# `commands.json` format
 
 **Table of Contents**
 1. [Schema](#schema)
