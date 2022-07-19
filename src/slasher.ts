@@ -57,7 +57,7 @@ type ExistingCommand = {
 
     // check the command definition exists
     if(!fs.existsSync("commands.json")) {
-        console.error(colors.red("!! ERROR !!"));
+        console.error(colors.bold.red("!! ERROR !!"));
         console.error(colors.red("You do not have a command file in your project!"));
         console.error(colors.red("Please create a " + colors.bold.red("commands.json") + " file in the base of your project."));
         return;
@@ -74,7 +74,7 @@ type ExistingCommand = {
             delete commandData["$schema"];
         }
     } catch(e) {
-        console.error(colors.red("Failed to load your command.json file!"));
+        console.error(colors.red("Failed to load your commands.json file!"));
         console.error();
         console.error(colors.red(e));
     }

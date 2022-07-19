@@ -7,8 +7,7 @@
         "subcommand": {
             "type": "object",
             "description": "Defines a new subcommand for this command.",
-            "anyOf": [
-                {
+            "anyOf": [{
                     "properties": {
                         "options": {
                             "type": "object",
@@ -22,7 +21,7 @@
                             "description": "The description of this subcommand"
                         }
                     },
-                    "required": [ "options", "description" ]
+                    "required": ["options", "description"]
                 },
                 {
                     "properties": {
@@ -35,7 +34,7 @@
                             "description": "The description of this subcommand"
                         }
                     },
-                    "required": [ "subcommand", "description" ] 
+                    "required": ["subcommand", "description"]
                 }
             ]
         },
@@ -92,16 +91,15 @@
                 },
                 "choices": {
                     "type": "object",
-                    "description": "A list of choices the user can choose and their assiociated value. Please not that creating choices will not allow any other values!",
+                    "description": "A list of choices the user can choose and their associated value. Please note that creating choices will not allow any other values!",
                     "additionalProperties": {
-                        "anyOf": [
-                            {
+                        "anyOf": [{
                                 "type": "string",
                                 "description": "A choice with a string value"
                             },
                             {
                                 "type": "number",
-                                "description": "A choice with an number value"
+                                "description": "A choice with a number value"
                             }
                         ]
                     }
@@ -193,7 +191,7 @@
 
     "additionalProperties": {
         "type": "object",
-        "description": "Defines a new slash comamnd on Discord.",
+        "description": "Defines a new slash command on Discord.",
         "required": [
             "description"
         ],
