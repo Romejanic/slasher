@@ -183,7 +183,7 @@ function filterOptions(options: SlasherClientOptions) {
     } else if (Array.isArray(options.intents)) {
         finalOptions.intents = [ ...options.intents, Intents.FLAGS.GUILDS ];
     } else if(typeof options.intents === "number") {
-        finalOptions.intents = options.intents & Intents.FLAGS.GUILDS;
+        finalOptions.intents = options.intents | Intents.FLAGS.GUILDS;
     } else if(typeof options.intents === "string") {
         // this probably shouldn't be used, but maybe the user
         // needs a specific intent other than GUILDS? just leave
