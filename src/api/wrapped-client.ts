@@ -190,6 +190,5 @@ function filterOptions(options: SlasherClientOptions) {
         // it be
         finalOptions.intents = options.intents as IntentsString;
     }
-    delete options.token;
     return finalOptions;
 }
