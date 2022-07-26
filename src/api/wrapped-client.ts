@@ -9,7 +9,7 @@ import {
     Message
 } from 'discord.js';
 import * as fs from 'fs';
-import { Command, CommandContext, CommandOptions } from './command-context';
+import { Command, CommandContext } from './command-context';
 
 export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
     /** The bot's login token, from the 'Bot' section of the application */
