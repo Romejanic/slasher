@@ -53,7 +53,7 @@ Replies to the command interaction with a certain message. This will mark the in
 |Parameter|Type                                 |Description|Required|
 |---------|-------------------------------------|-----------|------|
 |content|string or [MessageEmbed](https://discord.js.org/#/docs/main/stable/class/MessageEmbed) or [InteractionReplyOptions](https://discord.js.org/#/docs/main/stable/typedef/InteractionReplyOptions)|What to reply to the message with.|yes|
-|hidden|boolean|Whether this message will be visible only to the sender|no (default `false`)|
+|[hidden](./EphemeralResponses.md)|boolean|Whether this message will be visible only to the sender [(ephemeral repsonse)](https://discordjs.guide/slash-commands/response-methods.html#ephemeral-responses)|no (default `false`)|
 
 **Returns:** `Promise<`[Message](https://discord.js.org/#/docs/main/stable/class/Message)` | void>`
 A promise for the sent reply message
@@ -76,7 +76,7 @@ In Discord, deferring the response will display `"<botname> is thinking..."` unt
 
 |Parameter|Type                                 |Description|Required|
 |---------|-------------------------------------|-----------|------|
-|hidden|boolean|Whether this message will be visible only to the sender|no (default `false`)|
+|[hidden](./EphemeralResponses.md)|boolean|Whether this message will be visible only to the sender [(ephemeral repsonse)](https://discordjs.guide/slash-commands/response-methods.html#ephemeral-responses)|no (default `false`)|
 
 **Returns:** `Promise<void>`
 A promise which resolves once the response is sent
