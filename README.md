@@ -23,6 +23,8 @@ Forget about `SlashCommandBuilder` and `REST`. Slasher takes care of all of it f
 
 Even if you're not using discord.js to build your bot, you can still make use of the handy CLI tool to make adding slash commands painless!
 
+### Slasher currently supports discord.js v14 ONLY. The package will no longer work with v13.
+
 ## Install
 Install for use in a node project
 ```sh
@@ -49,16 +51,17 @@ $ slasher
 ```
 Then we can create our bot!
 ```js
-const { SlasherClient } = require("discord.js-slasher");
-// import { SlasherClient } from 'discord.js-slasher';
+const { Events } = require("discord.js");
+const { SlasherClient, SlasherEvents } = require("discord.js-slasher");
+// alternatively use import statements
 
 const client = new SlasherClient({ useAuth: true });
 
-client.on("ready", () => {
+client.on(Events.ClientReady, () => {
     console.log("Logged in as " + client.user.tag);
 });
 
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     ctx.reply(`Howdy ${ctx.user.tag}!`);
 });
 
