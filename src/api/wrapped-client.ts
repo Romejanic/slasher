@@ -1,12 +1,15 @@
 import {
-    Client, ClientOptions, Intents,
-    IntentsString, MessageEmbed,
-    InteractionReplyOptions, ClientEvents,
+    Client, ClientOptions,
+    InteractionReplyOptions, ClientEvents, Events,
     Awaitable,
     BitFieldResolvable,
-    WebhookEditMessageOptions,
     GuildChannel,
-    Message
+    Message,
+    GatewayIntentsString,
+    PermissionFlagsBits,
+    EmbedBuilder,
+    InteractionEditReplyOptions,
+    GatewayIntentBits
 } from 'discord.js';
 import * as fs from 'fs';
 import { Command, CommandContext } from './command-context';
@@ -17,7 +20,7 @@ export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
     /** Whether to read the token from the auth.json file */
     useAuth?: boolean,
     /** The intents for this client, in most cases this can be left undefined */
-    intents?: BitFieldResolvable<IntentsString, number>
+    intents?: BitFieldResolvable<GatewayIntentsString, number>
 };
 
 export class SlasherClient extends Client {
@@ -31,9 +34,9 @@ export class SlasherClient extends Client {
     }
 
     private addCommandHandler() {
-        this.on("interactionCreate", async (interaction) => {
+        this.on(Events.InteractionCreate, async (interaction) => {
             // ignore the interaction if it's not a command
-            if(!interaction.isCommand()) return;
+            if(!interaction.isChatInputCommand()) return;
 
             // create command context object
             let cmd = interaction as Command;
@@ -52,12 +55,12 @@ export class SlasherClient extends Client {
                     id: cmd.guild.id,
                     member: cmd.guild.members.resolve(cmd.user.id),
                     owner: cmd.user.id === cmd.guild.ownerId,
-                    isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has("ADMINISTRATOR"),
+                    isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has(PermissionFlagsBits.Administrator),
                     channelPermissions: (cmd.channel as GuildChannel).permissionsFor(cmd.user)
                 } : undefined,
                 reply: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
+                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
                         contentOptions.ephemeral = hidden;
@@ -70,15 +73,15 @@ export class SlasherClient extends Client {
                         });
                     }
                 },
-                defer: async (hidden = false): Promise<void> => {
+                defer: async (hidden = false) => {
                     return await cmd.deferReply({
-                        ephemeral: hidden 
+                        ephemeral: hidden
                     });
                 },
                 edit: async (content) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
-                    let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as WebhookEditMessageOptions : undefined;
+                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionEditReplyOptions : undefined;
                     if(contentOptions) {
                         return await cmd.editReply(contentOptions).then(m => m as Message);
                     } else {
@@ -90,7 +93,7 @@ export class SlasherClient extends Client {
                 },
                 followUp: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
+                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
                         contentOptions.ephemeral = hidden;
@@ -107,7 +110,7 @@ export class SlasherClient extends Client {
                     if(!options) {
                         options = { time: timeout };
                     }
-                    options.filter = options.filter ? options.filter : i => i.customId === modal.customId;
+                    options.filter = options.filter ? options.filter : i => i.customId === modal.data.custom_id;
                     options.time = options.time ? options.time : timeout;
                     await cmd.showModal(modal);
                     return await cmd.awaitModalSubmit(options);
@@ -179,16 +182,13 @@ function getBotToken(options: SlasherClientOptions): string {
 function filterOptions(options: SlasherClientOptions) {
     let finalOptions = options as ClientOptions;
     if(!options.intents) {
-        finalOptions.intents = [ Intents.FLAGS.GUILDS ];
+        finalOptions.intents = [ GatewayIntentBits.Guilds ];
     } else if (Array.isArray(options.intents)) {
-        finalOptions.intents = [ ...options.intents, Intents.FLAGS.GUILDS ];
+        finalOptions.intents = [ ...options.intents, GatewayIntentBits.Guilds ];
     } else if(typeof options.intents === "number") {
-        finalOptions.intents = options.intents | Intents.FLAGS.GUILDS;
+        finalOptions.intents = options.intents | GatewayIntentBits.Guilds;
     } else if(typeof options.intents === "string") {
-        // this probably shouldn't be used, but maybe the user
-        // needs a specific intent other than GUILDS? just leave
-        // it be
-        finalOptions.intents = options.intents as IntentsString;
+        finalOptions.intents = [options.intents, "Guilds"] as GatewayIntentsString[];
     }
     return finalOptions;
 }

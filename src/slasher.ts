@@ -6,9 +6,7 @@ import * as readline from 'readline';
 import { Writable } from 'stream';
 import CommandPreview from './command-preview';
 
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
-import { Permissions } from 'discord.js';
+import { PermissionFlagsBits, PermissionsBitField, REST, Routes } from 'discord.js';
 
 const OPTION_TYPES = {
     "subcommand": 1,
@@ -39,7 +37,7 @@ const CHANNEL_TYPES = {
 };
 const NUM_CHANNEL_TYPES = Object.keys(CHANNEL_TYPES).length;
 
-const PERMISSION_TYPES = Object.keys(Permissions.FLAGS);
+const PERMISSION_TYPES = Object.keys(PermissionFlagsBits);
 const PERMISSION_LIST_URL = "https://github.com/Romejanic/slasher/blob/master/docs/guides/command-json.md#permission-list";
 
 type DiscordChoice = {
@@ -391,7 +389,7 @@ function validateTree(tree: Types.CommandTree) {
         if(permissions.requires) {
             if(Array.isArray(permissions.requires)) {
                 if(permissions.requires.some(v => typeof v !== "string")) return track(`${cmdName} permissions.requires: each item must be a string`);
-                let permBits = new Permissions();
+                let permBits = new PermissionsBitField();
                 let uniquePerms = permissions.requires.filter((v,i,a) => a.indexOf(v) === i);
                 for(let v of uniquePerms) {
                     if(!PERMISSION_TYPES.includes(v)) return track(`${cmdName} permissions.requires: invalid permission '${v}'. Please refer to ${PERMISSION_LIST_URL} for a list of permissions.`);
