@@ -30,12 +30,14 @@
         "slasher": "build/src/slasher.js"
     },
     "dependencies": {
-        "@discordjs/rest": "^1.0.0",
-        "ansi-colors": "^4.1.1",
-        "discord-api-types": "^0.36.3",
-        "discord.js": "^14.0.3"
+        "@discordjs/rest": "^1.6.0",
+        "ansi-colors": "^4.1.3",
+        "discord-api-types": "^0.36.3"
+    },
+    "peerDependencies": {
+        "discord.js": "^14.8.0"
     },
     "devDependencies": {
-        "typescript": "^4.4.2"
+        "typescript": "^4.9.5"
     }
 }
