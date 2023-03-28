@@ -13,6 +13,7 @@ import {
 } from 'discord.js';
 import * as fs from 'fs';
 import { Command, CommandContext } from './command-context';
+import { SlasherEvents } from './const';
 
 export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
     /** The bot's login token, from the 'Bot' section of the application */
@@ -118,7 +119,7 @@ export class SlasherClient extends Client {
             };
 
             // emit the command event with the context
-            this.emit("command", ctx);
+            this.emit(SlasherEvents.CommandCreate, ctx);
         });
     }
 
@@ -133,10 +134,10 @@ export class SlasherClient extends Client {
 }
 
 export declare interface SlasherClient {
-    on(event: "command", listener: (context: CommandContext) => void): this;
-    once(event: "command", listener: (context: CommandContext) => void): this;
-    off(event: "command", listener: (context: CommandContext) => void): this;
-    removeAllListeners(event: "command"): this;
+    on(event: SlasherEvents.CommandCreate, listener: (context: CommandContext) => void): this;
+    once(event: SlasherEvents.CommandCreate, listener: (context: CommandContext) => void): this;
+    off(event: SlasherEvents.CommandCreate, listener: (context: CommandContext) => void): this;
+    removeAllListeners(event: SlasherEvents.CommandCreate): this;
 
     // required for existing discord.js events to carry over
     on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;

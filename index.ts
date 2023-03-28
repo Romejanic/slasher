@@ -1,9 +1,4 @@
-// just export everything from both modules
-
+// just export everything from all API modules
 export * from './src/api/wrapped-client';
 export * from './src/api/command-context';
-
-// add constants enum to comply with discord.js v14 conventions
-export enum SlasherEvents {
-    CommandCreate = "command"
-}
+export * from './src/api/const';
