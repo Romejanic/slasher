@@ -16,7 +16,6 @@ import {
 } from 'discord.js';
 import { SlasherClient } from './wrapped-client';
 
-export declare type Command = CommandInteraction;
 export declare type CommandOptions = typeof ChatInputCommandInteraction.prototype.options;
 
 declare module "discord.js" {
@@ -40,7 +39,7 @@ export interface CommandContext {
     name: string,
 
     /** The command object itself */
-    command: Command,
+    command: ChatInputCommandInteraction,
 
     /** The options passed into the command by the user */
     options: CommandOptions,

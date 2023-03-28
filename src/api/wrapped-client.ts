@@ -12,7 +12,7 @@ import {
     GatewayIntentBits
 } from 'discord.js';
 import * as fs from 'fs';
-import { Command, CommandContext } from './command-context';
+import { CommandContext } from './command-context';
 import { SlasherEvents } from './const';
 
 export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
