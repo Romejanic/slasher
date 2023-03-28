@@ -35,18 +35,17 @@ export class SlasherClient extends Client {
     }
 
     private addCommandHandler() {
-        this.on(Events.InteractionCreate, async (interaction) => {
+        this.on(Events.InteractionCreate, async (cmd) => {
             // ignore the interaction if it's not a command
-            if(!interaction.isChatInputCommand()) return;
+            if(!cmd.isChatInputCommand()) return;
 
             // create command context object
-            let cmd = interaction as Command;
             let ctx: CommandContext = {
                 name: cmd.commandName,
                 command: cmd,
-                options: interaction.options,
+                options: cmd.options,
                 isServer: cmd.inGuild(),
-                isDM: (await cmd.user.createDM()).id === interaction.channelId,
+                isDM: (await cmd.user.createDM()).id === cmd.channelId,
                 channel: cmd.channel,
                 user: cmd.user,
                 client: this,
