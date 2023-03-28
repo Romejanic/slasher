@@ -87,7 +87,7 @@ For a full list of differences please see the [Upgrading from v13 to v14](https:
 However, here's a brief list of the most common issues you'll likely encounter.
 
 ### Common issues
-- Embeds, Components and Modals now all use builders. In most cases this will just involve a class name change, but some deprecated in functions in v13 have been removed so you might need to juggle a few function calls. e.g.
+- Embeds, Components and Modals now all use builders. In most cases this will just involve a class name change, but some deprecated functions in v13 have been removed so you might need to juggle a few function calls. e.g.
     - `MessageEmbed` -> `EmbedBuilder`
     - `MessageButton` -> `ButtonBuilder`
     - `MessageActionRow` -> `ActionRowBuilder`
@@ -98,7 +98,7 @@ However, here's a brief list of the most common issues you'll likely encounter.
     - `client.on("ready", ...)` -> `client.on(Events.ClientReady, ...)`
     - `client.on("guildDelete", ...)` -> `client.on(Events.GuildDelete, ...)`
     - `client.on("reactionAdd", ...)` -> `client.on(Events.ReactionAdd, ...)`
-- Most constants are replaced with enums and constants. Similar to command permissions they are also now all defined in `PascalCase` rather than `SCREAMING_SNAKE_CASE`. There are a few different ones to be aware of, such as:
+- Most constant values are replaced with enums and constants. Similar to command permissions they are also now all defined in `PascalCase` rather than `SCREAMING_SNAKE_CASE`. There are a few different ones to be aware of, such as:
     - Permissions: `PermissionFlagBits`
     - Intents: `IntentFlagBits`
     - Partials: `Partials`
