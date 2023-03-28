@@ -83,12 +83,12 @@ export class SlasherClient extends Client {
                     let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionEditReplyOptions : undefined;
                     if(contentOptions) {
-                        return await cmd.editReply(contentOptions).then(m => m as Message);
+                        return await cmd.editReply(contentOptions);
                     } else {
                         return await cmd.editReply({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined
-                        }).then(m => m as Message);
+                        });
                     }
                 },
                 followUp: async (content, hidden = false) => {

@@ -105,7 +105,7 @@ export interface CommandContext {
      * @param content The content to edit the reply with
      * @returns a promise for the sent message
      */
-    edit: (content: string | EmbedBuilder | InteractionEditReplyOptions) => Promise<InteractionResponse<boolean> | Message<boolean>>;
+    edit: (content: string | EmbedBuilder | InteractionEditReplyOptions) => Promise<Message<boolean>>;
 
     /**
      * Sends a separate follow-up message to the user regarding this command.
