@@ -29,6 +29,9 @@
     "bin": {
         "slasher": "build/src/slasher.js"
     },
+    "engines": {
+        "node": ">=16.9.0"
+    },
     "dependencies": {
         "ansi-colors": "^4.1.3"
     },
