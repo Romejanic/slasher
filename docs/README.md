@@ -19,5 +19,4 @@ If you are upgrading from an older version of Slasher, see **Upgrade Guides** be
 |[SlasherClientOptions](./api/SlasherClientOptions.md)|The options class for creating the bot client|
 |[SlasherEvents](./api/SlasherEvents.md)|Enum of events fired by the Slasher client|
 |[CommandContext](./api/CommandContext.md)|The context object passed by the `command` event|
-|[Command](./api/Command.md)|Alias type for [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction)|
 |[CommandOptions](./api/CommandOptions.md)|Class for accessing the options set by the user.|

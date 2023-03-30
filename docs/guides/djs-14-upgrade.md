@@ -77,6 +77,27 @@ Due to some internal changes, the command permission values in your `commands.js
 ```
 The json schema has been updated so your IDE should highlight these as warnings if you are using the latest schema version. If yours is out of date, you can run `JSON: Clear Schema Cache` in Visual Studio Code to refetch it.
 
+### `Command` alias type
+The `Command` alias type has been removed. If you make any reference to it in your code, please replace it with a reference to [ChatInputCommandInteraction](https://discord.js.org/#/docs/discord.js/main/class/ChatInputCommandInteraction) from discord.js' API. Since `Command` was an alias type, this removal should only affect TypeScript code.
+
+**Before**
+```ts
+import { Command } from 'discord.js-slasher';
+
+function process(cmd: Command) {
+    // do something
+}
+```
+
+**After**
+```ts
+import { ChatInputCommandInteraction } from 'discord.js';
+
+function process(cmd: ChatInputCommandInteraction) {
+    // do something
+}
+```
+
 ## Further differences
 That's all the differences in Slasher's API. However there are far more differences in discord.js itself. You'll have to go through your codebase and update any vanilla discord.js code which is now out of date.
 
