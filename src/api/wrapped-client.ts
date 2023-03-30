@@ -133,10 +133,10 @@ export class SlasherClient extends Client {
 }
 
 export declare interface SlasherClient {
-    on(event: SlasherEvents.CommandCreate, listener: (context: CommandContext) => void): this;
-    once(event: SlasherEvents.CommandCreate, listener: (context: CommandContext) => void): this;
-    off(event: SlasherEvents.CommandCreate, listener: (context: CommandContext) => void): this;
-    removeAllListeners(event: SlasherEvents.CommandCreate): this;
+    on(event: "command", listener: (context: CommandContext) => void): this;
+    once(event: "command", listener: (context: CommandContext) => void): this;
+    off(event: "command", listener: (context: CommandContext) => void): this;
+    removeAllListeners(event: "command"): this;
 
     // required for existing discord.js events to carry over
     on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
