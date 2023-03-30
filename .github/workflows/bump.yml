@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Check if branch is invalid
-        if: ${{ github.ref_name == "master" }}
+        if: ${{ github.ref_name == 'master' }}
         run: |
           echo "Invalid branch: ${{ github.ref_name }}"
           exit 1
