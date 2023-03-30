@@ -290,7 +290,7 @@ Permissions are controlled using the `permissions` option on a command.
             "disabled": false,
             "dm": true,
             "requires": [
-                "MANAGE_GUILD", "MANAGE_MESSAGES"
+                "ManageGuild", "ManageMessages"
             ]
         }
     }
