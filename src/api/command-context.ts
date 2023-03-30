@@ -1,21 +1,22 @@
-import { APIMessage } from 'discord-api-types/v9';
 import {
     CommandInteraction, Guild, TextBasedChannel,
-    User, Message, MessageEmbed,
     InteractionReplyOptions,
     CommandInteractionOptionResolver,
     GuildMember,
-    WebhookEditMessageOptions,
-    Permissions,
-    Modal,
     ModalSubmitInteraction,
-    ModalOptions,
-    AwaitModalSubmitOptions
+    AwaitModalSubmitOptions,
+    User,
+    EmbedBuilder,
+    Message,
+    ModalBuilder,
+    ChatInputCommandInteraction,
+    PermissionsBitField,
+    InteractionResponse,
+    InteractionEditReplyOptions
 } from 'discord.js';
 import { SlasherClient } from './wrapped-client';
 
-export declare type Command = CommandInteraction;
-export declare type CommandOptions = typeof CommandInteraction.prototype.options;
+export declare type CommandOptions = typeof ChatInputCommandInteraction.prototype.options;
 
 declare module "discord.js" {
     interface CommandInteractionOptionResolver {
@@ -38,7 +39,7 @@ export interface CommandContext {
     name: string,
 
     /** The command object itself */
-    command: Command,
+    command: ChatInputCommandInteraction,
 
     /** The options passed into the command by the user */
     options: CommandOptions,
@@ -76,7 +77,7 @@ export interface CommandContext {
         id: string,
 
         /** The user's permissions in this channel */
-        channelPermissions: Readonly<Permissions>
+        channelPermissions: Readonly<PermissionsBitField>
     },
 
     /** The bot client */
@@ -88,7 +89,7 @@ export interface CommandContext {
      * @param hidden Whether the content will be visible only to the sender
      * @returns a promise for the sent message
      */
-    reply: (content: string | MessageEmbed | InteractionReplyOptions, hidden?: boolean) => Promise<Message | APIMessage | void>;
+    reply: (content: string | EmbedBuilder | InteractionReplyOptions, hidden?: boolean) => Promise<InteractionResponse<boolean> | Message<boolean>>;
 
     /**
      * Defers a reply to the command. This causes Discord to display a
@@ -96,14 +97,14 @@ export interface CommandContext {
      * @param hidden Whether the prompt will be visible only to the sender
      * @returns a promise for when the prompt has been created
      */
-    defer: (hidden?: boolean) => Promise<void>;
+    defer: (hidden?: boolean) => Promise<InteractionResponse<boolean>>;
 
     /**
      * Edits the previous reply to the command.
      * @param content The content to edit the reply with
      * @returns a promise for the sent message
      */
-    edit: (content: string | MessageEmbed | WebhookEditMessageOptions) => Promise<Message>;
+    edit: (content: string | EmbedBuilder | InteractionEditReplyOptions) => Promise<Message<boolean>>;
 
     /**
      * Sends a separate follow-up message to the user regarding this command.
@@ -111,7 +112,7 @@ export interface CommandContext {
      * @param hidden Whether the content will be visible only to the sender
      * @returns a promise for the sent message
      */
-    followUp: (content: string | MessageEmbed | InteractionReplyOptions, hidden?: boolean) => Promise<Message>;
+    followUp: (content: string | EmbedBuilder | InteractionReplyOptions, hidden?: boolean) => Promise<Message>;
 
     /**
      * Shows the given modal to the user and resolves with the response.
@@ -121,6 +122,6 @@ export interface CommandContext {
      * @param options Other options to set for the wait
      * @returns a promise for the modal submission
      */
-    modalResponse: (modal: Modal | ModalOptions, timeout?: number, options?: AwaitModalSubmitOptions<ModalSubmitInteraction>) => Promise<ModalSubmitInteraction>;
+    modalResponse: (modal: ModalBuilder, timeout?: number, options?: AwaitModalSubmitOptions<ModalSubmitInteraction>) => Promise<ModalSubmitInteraction>;
 
 };

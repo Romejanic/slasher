@@ -25,7 +25,7 @@ Determines if a given option has been set by the user. This can be used to clean
 
 e.g.
 ```js
-client.on("command", async (ctx) => {
+client.on(SlasherEvents.CommandCreate, async (ctx) => {
     // greet the name if it exists
     if(ctx.options.has("name")) {
         await ctx.reply("Hello " + ctx.options.getString("name"));
