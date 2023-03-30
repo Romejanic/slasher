@@ -12,7 +12,7 @@ This guide will walk through how to upgrade a bot written with a beta version of
  As you may have noticed, newer installs of Slasher often install the wrong discord.js version. discord.js v14 is now a peer dependency, so it will ensure that there are no version incompatabilities when using Slasher, even if another major release of discord.js happens. However this means you will need to upgrade your bots to use discord.js v14 to continue using Slasher (which is my recommendation).
 
 ### Can I stay on a beta version of slasher?
-I would not advise staying on a beta version of Slasher. This is simply because only v1.0.0 and onwards are considered truly "stable" so there may be bugs and issues. You will also encounter the version discrepencies with discord.js mentioned above.
+I would not advise staying on a beta version of Slasher. This is simply because only v1.0.0 and onwards are considered truly "stable" so there may be bugs and issues. You will also encounter the version discrepencies with discord.js mentioned above. Furthermore, support for v13 will be dropped in the future, so it's best that you move to v14 as soon as you can.
 
 ## First steps
 The first steps in updating your bot is updating your packages. You should be able to do this in your project by running:
