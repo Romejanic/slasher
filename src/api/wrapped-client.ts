@@ -180,6 +180,10 @@ function getBotToken(options: SlasherClientOptions): string {
 
 // ensures the client options contains the GUILDS intent
 function filterOptions(options: SlasherClientOptions) {
+    // make sure valid options object is passed to client
+    if(!options) throw "You must pass an options object to SlasherClient!";
+    if(typeof options !== "object") throw "SlasherClient options must be an object!";
+    
     let finalOptions = options as ClientOptions;
     if(!options.intents) {
         finalOptions.intents = [ GatewayIntentBits.Guilds ];
