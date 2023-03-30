@@ -48,7 +48,7 @@ client.on(SlasherEvents.CommandCreate, async (ctx) => {
 ```
 
 ### Command permissions
-Due to some internal changes, the command permission values in your `commands.json` file have been changed from v13's `SCREAMING_SNAKE_CASE` to v14's `PascalCase`. For example, `MANAGE_GUILD` is now `ManageGuild`. You'll have to go through your `commands.json` file and update each permission to match. See [Permissions](../guides/command-json.md#permissions) for more a full list of the new permissions.
+Due to some internal changes, the command permission values in your `commands.json` file have been changed from v13's `SCREAMING_SNAKE_CASE` to v14's `PascalCase`. For example, `MANAGE_GUILD` is now `ManageGuild`. You'll have to go through your `commands.json` file and update each permission to match. See [Permissions](../guides/command-json.md#permission-list) for a full list of the new permissions.
 
 **Before**
 ```json
