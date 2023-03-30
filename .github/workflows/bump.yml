@@ -26,13 +26,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check if branch is invalid
+        if: ${{ github.ref_name == "master" }}
+        run: |
+          echo "Invalid branch: ${{ github.ref_name }}"
+          exit 1
+
       - name: Bump version
         run: |
+          git config --global user.email "runner@github.com"
+          git config --global user.name "GitHub Runner"
+
           if [[ -z $VERSION_OVERRIDE ]]; then
             npm version $TYPE -m "Bump to version %s"
           else
             npm version $VERSION_OVERRIDE -m "Bump to version $VERSION_OVERRIDE"
           fi
+        env:
+          TYPE: ${{ inputs.type }}
+          VERSION_OVERRIDE: ${{ inputs.override }}
 
       - name: Push to branch
         run: git push
