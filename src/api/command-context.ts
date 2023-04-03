@@ -1,5 +1,5 @@
 import {
-    CommandInteraction, Guild, TextBasedChannel,
+    Guild, TextBasedChannel,
     InteractionReplyOptions,
     CommandInteractionOptionResolver,
     GuildMember,

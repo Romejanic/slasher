@@ -44,10 +44,6 @@ type DiscordChoice = {
     name: string,
     value: string | number
 };
-type ExistingCommand = {
-    id: string,
-    name: string
-};
 
 (async () => {
     console.log("S/ASHER " + require("../../package.json").version + " by Romejanic");
@@ -106,11 +102,7 @@ type ExistingCommand = {
         output: new Writable({
             write: (chunk, encoding, cb) => {
                 if(muted.get()) {
-                    let len = 1;
-                    if(chunk.length) {
-                        len = chunk.length;
-                    }
-                    let txt = Array(chunk).map(s => "*").join("");
+                    let txt = Array(chunk).map(_ => "*").join("");
                     process.stdout.write(Buffer.from(txt));
                 } else {
                     process.stdout.write(chunk, encoding);
