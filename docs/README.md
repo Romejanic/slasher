@@ -10,6 +10,7 @@ If you are upgrading from an older version of Slasher, see **Upgrade Guides** be
 - [Handling modals](./guides/handling-modals.md)
 
 ## Upgrade Guides
+- [Upgrading an existing bot to Slasher](./guides/upgrading-to-slasher.md)
 - [Upgrading to 1.0.0 and discord.js v14](./guides/djs-14-upgrade.md)
 
 ## API Reference
