@@ -18,7 +18,7 @@ import { SlasherEvents } from './const';
 export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
     /** The bot's login token, from the 'Bot' section of the application */
     token?: string,
-    /** Whether to read the token from the auth.json file */
+    /** Whether to read the token from the auth.json file. This is the default option if a token is not manually passed in. */
     useAuth?: boolean,
     /** The intents for this client, in most cases this can be left undefined */
     intents?: BitFieldResolvable<GatewayIntentsString, number>
@@ -166,14 +166,14 @@ export declare interface SlasherClient {
 
 // gets the token from either the options or the auth.json file
 function getBotToken(options: SlasherClientOptions): string {
-    if(options.token) return options.token;
-    if(options.useAuth && fs.existsSync("auth.json")) {
+    if(options && options.token) return options.token;
+    if(fs.existsSync("auth.json")) {
         let data = fs.readFileSync("auth.json");
         let json = JSON.parse(data.toString());
         return json.token;
     } else {
         console.warn("Could not find bot token in client options or auth.json!");
-        console.warn("You must either provide a token or set useAuth to true!");
+        console.warn("You must either provide a token or create an auth.json file!");
     }
     return null;
 }
@@ -181,8 +181,8 @@ function getBotToken(options: SlasherClientOptions): string {
 // ensures the client options contains the GUILDS intent
 function filterOptions(options: SlasherClientOptions) {
     // make sure valid options object is passed to client
-    if(!options) throw "You must pass an options object to SlasherClient!";
-    if(typeof options !== "object") throw "SlasherClient options must be an object!";
+    if(!options) options = {};
+    else if(typeof options !== "object") throw "SlasherClient options must be an object!";
     
     let finalOptions = options as ClientOptions;
     if(!options.intents) {
