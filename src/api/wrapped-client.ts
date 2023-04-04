@@ -18,8 +18,6 @@ import { SlasherEvents } from './const';
 export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
     /** The bot's login token, from the 'Bot' section of the application */
     token?: string,
-    /** Whether to read the token from the auth.json file. This is the default option if a token is not manually passed in. */
-    useAuth?: boolean,
     /** The intents for this client, in most cases this can be left undefined */
     intents?: BitFieldResolvable<GatewayIntentsString, number>
 };

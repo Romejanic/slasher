@@ -52,7 +52,7 @@ First we create our `commands.json` definition file:
 ```
 Then run the `slasher` utility and follow the prompts to upload it to Discord!
 ```sh
-$ slasher
+$ npx slasher
 ```
 Then we can create our bot!
 ```js
@@ -60,7 +60,7 @@ const { Events } = require("discord.js");
 const { SlasherClient, SlasherEvents } = require("discord.js-slasher");
 // alternatively use import statements
 
-const client = new SlasherClient({ useAuth: true });
+const client = new SlasherClient();
 
 client.on(Events.ClientReady, () => {
     console.log("Logged in as " + client.user.tag);
