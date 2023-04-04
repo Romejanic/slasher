@@ -226,10 +226,10 @@ $ npx slasher
 Please watch this space as support for redeploying commands without manual intervention will be added in an upcoming version of Slasher.
 
 ## What's next?
-Well done! Your bot should now be running on Slasher, and I hope you find it as useful for simplifying your bot as I do for my bots.
+Well done! Your bot should now be running on Slasher, and I hope you find it as useful for simplifying your bot as I do for my bots. I would suggest reading the following docs to get more familiar with Slasher:
 
 - Learn about [the full command.js format](./command-json.md)
 - Learn about [adding command options](./adding-options.md)
 - Review the [SlasherClient](../api/SlasherClient.md) and [CommandContext](../api/CommandContext.md) API
 - Review the [Getting Started](./getting-started.md) guide for a step by step guide of building a basic Slasher bot
-- If you encounter any issues or have any ideas to improve Slasher, please [raise an issue]()
+- If you encounter any issues or have any ideas to improve Slasher, please [raise an issue](https://github.com/Romejanic/slasher/issues/new/choose)

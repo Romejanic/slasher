@@ -25,6 +25,11 @@ Even if you're not using discord.js to build your bot, you can still make use of
 
 ### Slasher currently supports discord.js v14 ONLY. The package will no longer work with v13.
 
+## Guides
+**If you are using Slasher for the first time, please see the [Getting Started](./docs/guides/getting-started.md) guide.**
+
+**If you are migrating an existing bot, please see the [Slasher Migration](./docs/guides/upgrading-to-slasher.md) guide.**
+
 ## Install
 Install for use in a node project
 ```sh
