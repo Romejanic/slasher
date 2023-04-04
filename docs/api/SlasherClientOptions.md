@@ -26,7 +26,7 @@ string
 
 
 ### ?useAuth
-When this property is set to true, the client will read the bot token from the `auth.json` file in the root directory of your project. This file will be automatically created by the `slasher` CLI tool when uploading your commands to Discord if you choose.
+When this property is set to true, the client will read the bot token from the `auth.json` file in the root directory of your project. This file will be automatically created by the `slasher` CLI tool when uploading your commands to Discord if you choose. This option is the default unless a `token` is provided.
 
 **Type**
 boolean

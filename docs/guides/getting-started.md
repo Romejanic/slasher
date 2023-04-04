@@ -6,8 +6,9 @@
 3. [Create your command file](#create-your-command-file)
 4. [Run the slasher utility](#run-the-slasher-utility)
 5. [Writing your bot](#writing-your-bot)
-6. [What's next?](#whats-next)
-7. [Common issues/errors](#common-issueserrors)
+6. [Final code](#final-code)
+7. [What's next?](#whats-next)
+8. [Common issues/errors](#common-issueserrors)
 
 ## Introduction
 Welcome! You're on your way to creating your first Discord bot with Slasher!
@@ -17,11 +18,11 @@ Let's start with a little bit about what to expect:
 * Slasher is mainly two things: a command line tool and a library
 * Slasher is an *abstraction layer* which sits on top of discord.js, it is **NOT** a replacement for discord.js
 * You should still have a thorough knowledge of discord.js and how to use it. In fact, knowledge of how to use slash commands with vanilla discord.js would be preferable (maybe to increase appreciation for Slasher :P)
-* At the time of writing, this package is a beta at the most. It is still fairly early in development, and you may encounter bugs or other unexpected behaviour. If anything happens, please [report it](https://github.com/Romejanic/slasher/issues/new/choose) so this package can become as awesome as possible :D
+* This package is now out of beta and considered stable. If anything goes wrong, please [report it](https://github.com/Romejanic/slasher/issues/new/choose) so this package can become as awesome as possible :D
 
 **You will need**
 - [A bot application](https://discord.com/developers/applications)
-- A latest [node.js](https://nodejs.org/en/) installation
+- A latest [node.js](https://nodejs.org/en/) installation (at least v16)
 - A Discord server for testing
 
 **When inviting your bot to your server** make sure it has the `bot` and `applications.commands` scopes, otherwise you won't be able to update the commands! ([see here](img/scopes.png))
@@ -34,7 +35,7 @@ The first step is always to add the package to your project. This can be done wi
 $ npm i -s discord.js discord.js-slasher
 ```
 
-While Slasher depends on the `discord.js` package I'd still recommend that you add `discord.js` to your dependencies separately, in case (for whatever reason) you decide to stop using Slasher.
+While Slasher depends on the `discord.js` package I'd still recommend that you add `discord.js` to your dependencies separately, in case (for whatever reason) you decide to stop using Slasher. Slasher also defines `discord.js` as a peer dependency, which means it shouldn't be possible to have a version conflict. If that does happen [please report it](https://github.com/Romejanic/slasher/issues/new/choose).
 
 ## Create your command file
 With Slasher, all of your commands will be defined in the `commands.json` file in the root directory of your project. Go ahead and create it now.
@@ -74,11 +75,6 @@ You now have everything you need to make your first command!
 Installing the slasher package also adds a new command line tool to your workspace. This utility is responsible for validating the `commands.json` file and then updating the data on Discord's end.
 
 You can run this utility by simply opening a terminal in your project's folder and running:
-```sh
-$ slasher
-```
-
-Sometimes on Windows it may not work correctly. If this happens to you, try running this instead:
 ```sh
 $ npx slasher
 ```
@@ -123,18 +119,18 @@ If you go to Discord and type `/test` into a text channel, you should see your n
 ## Writing your bot
 Now that we've updated the command on Discord, it's time to actually write the bot which handles the command!
 
-You can also follow along this guide with Typescript if you would prefer to use it. Slasher has full type support for both Javascript and Typescript, so using it with Typescript should be a breeze! (Slasher was actually written in Typescript so it's completely supported!)
+You can also follow along this guide with Typescript if you would prefer to use it. Slasher has full type support for both Javascript and Typescript, so using it with Typescript should be a breeze! In fact, Slasher was actually written in Typescript.
 
 Add an `index.js` file to your project. The first thing to do is to add an import for the project.
 
 In normal Javascript you do it the usual way with `require()`:
 ```js
-const { SlasherClient } = require("discord.js-slasher");
+const { SlasherClient, SlasherEvents } = require("discord.js-slasher");
 ```
 
 If you're using an ES6 transpiler or Typescript, you can type this:
 ```ts
-import { SlasherClient } from 'discord.js-slasher';
+import { SlasherClient, SlasherEvents } from 'discord.js-slasher';
 ```
 
 You then need to create the client which will handle the events and logging into discord.js.
@@ -142,10 +138,7 @@ You then need to create the client which will handle the events and logging into
 const client = new SlasherClient();
 ```
 
-The client constructor takes an argument, which is the [SlasherClientOptions](../api/SlasherClientOptions.md), and it is used to pass the token into the client. However, since we saved our details in the `auth.json` file, the client can actually read from it to get the token automatically! To do this, just write
-```js
-const client = new SlasherClient({ useAuth: true });
-```
+The client constructor takes an argument, which is the [SlasherClientOptions](../api/SlasherClientOptions.md), and it is used to pass the token into the client. However, since we saved our details in the `auth.json` file, the client can actually read from it to get the token automatically!
 
 And that's it! Just an FYI, there is also an option to supply the token directly if you are using a different method to store the bot's token (e.g. custom config file, [dotenv](https://www.npmjs.com/package/dotenv), etc). You can use it like so:
 ```js
@@ -153,20 +146,20 @@ const token  = ...; // token from somewhere
 const client = new SlasherClient({ token });
 ```
 
-However for this guide, you can just stick to the first method with `useAuth: true`.
+However for this guide, you can just stick to the first method with no options.
 
 Next up we need to add an event listener which will respond to our command. This will be fired whenever a user runs one of your bot's commands, and will provide a [context object](../api/CommandContext.md) with a data about the command, it's environment and it's sender.
 
 We can add the event listener like so:
 ```js
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
 
 });
 ```
 
 The first thing is to check which command has been run. In this case we're looking for the `/test` command, so we'll write:
 ```js
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "test") {
 
     }
@@ -177,21 +170,24 @@ Inside here we can now do whatever we want! But for now, let's write a command w
 
 Then we'll just use `ctx.reply()` to send a reply message back to the user.
 ```js
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "test") {
         ctx.reply(`Well hello there ${ctx.user.username}!`);
     }
 });
 ```
 
-That's pretty much it! The last thing left to do which is absolutely necessary is to send the call for the client to log into Discord with the bot token and start handling requests! But I'll also add a listener for the discord.js event `ready` to let us know when the bot is active.
+That's pretty much it! The last thing left to do which is absolutely necessary is to send the call for the client to log into Discord with the bot token and start handling requests! But I'll also add a listener for the discord.js event `Events.ClientReady` to let us know when the bot is active.
 
 ```js
-client.on("ready", () => {
+const { Events } = require("discord.js");
+// ...
+
+client.on(Events.ClientReady, () => {
     console.log(`Logged in as ${client.user.tag}`);
 });
 
-// log into discord with the token
+// log into discord with the token in auth.json
 client.login();
 ```
 
@@ -209,18 +205,21 @@ Congratulations! You just made your first Discord bot using Slasher!
 ## Final code
 If you're looking for an overview of the guide or just a starting point for your next bot, here's the complete code for `index.js`:
 ```js
-const { SlasherClient } = require("discord.js-slasher");
-// import { SlasherClient } from 'discord.js-slasher';
+const { Events } = require("discord.js");
+const { SlasherClient, SlasherEvents } = require("discord.js-slasher");
+// or with imports
+// import { Events } from 'discord.js';
+// import { SlasherClient, SlasherEvents } from 'discord.js-slasher';
 
-const client = new SlasherClient({ useAuth: true });
+const client = new SlasherClient();
 
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "test") {
         ctx.reply(`Well hello there ${ctx.user.username}!`);
     }
 });
 
-client.on("ready", () => {
+client.on(Events.ClientReady, () => {
     console.log(`Logged in as ${client.user.tag}`);
 });
 

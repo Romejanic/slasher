@@ -7,7 +7,7 @@
 2. [Methods](#methods)
     1. [.login()](#login)
 3. [Events](#events)
-    1. [command](#command)
+    1. [CommandCreate](#commandcreate)
 
 ## Import
 JavaScript (pre ES6)
@@ -28,9 +28,9 @@ let client = new SlasherClient({ token: ... });
 ```
 ```js
 // automatically reads the token from auth.json
-let client = new SlasherClient({ useAuth: true });
+let client = new SlasherClient();
 ```
-However the options parameter extends discord.js' [ClientOptions](https://discord.js.org/#/docs/main/stable/typedef/ClientOptions) interface, so any valid options for discord.js will also work (e.g. sharding).
+However the options parameter extends discord.js' [ClientOptions](https://discord.js.org/#/docs/main/stable/typedef/ClientOptions) interface, so any valid options for discord.js will also work (e.g. more intents, partials, sharding).
 
 |Parameter|Type                                 |Description|
 |---------|-------------------------------------|-----------|
@@ -47,12 +47,13 @@ A promise for the token of the bot
 Also see: [Inherited methods from Client](https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=destroy)
 
 ## Events
+For a complete list of events see [SlasherEvents](./SlasherEvents.md).
 
-### command
+### [CommandCreate](./SlasherEvents.md#commandcreate)
 Emitted when a slash command is executed by a user using the bot. Passes a context object which provides most of the data needed to interact with the command and designed to simplify most checks and operations.
 
 |Parameter|Type                                 |Description|
 |---------|-------------------------------------|-----------|
 |context  |[CommandContext](./CommandContext.md)|The context object for the executed command|
 
-Also see: [Inherited events from Client](https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-applicationCommandCreate)
+Also see: [Inherited events from Client](https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-apiRequest)

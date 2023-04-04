@@ -1,23 +1,25 @@
 import {
-    Client, ClientOptions, Intents,
-    IntentsString, MessageEmbed,
-    InteractionReplyOptions, ClientEvents,
+    Client, ClientOptions,
+    InteractionReplyOptions, ClientEvents, Events,
     Awaitable,
     BitFieldResolvable,
-    WebhookEditMessageOptions,
     GuildChannel,
-    Message
+    Message,
+    GatewayIntentsString,
+    PermissionFlagsBits,
+    EmbedBuilder,
+    InteractionEditReplyOptions,
+    GatewayIntentBits
 } from 'discord.js';
 import * as fs from 'fs';
-import { Command, CommandContext } from './command-context';
+import { CommandContext } from './command-context';
+import { SlasherEvents } from './const';
 
 export declare type SlasherClientOptions = Omit<ClientOptions, 'intents'> & {
     /** The bot's login token, from the 'Bot' section of the application */
     token?: string,
-    /** Whether to read the token from the auth.json file */
-    useAuth?: boolean,
     /** The intents for this client, in most cases this can be left undefined */
-    intents?: BitFieldResolvable<IntentsString, number>
+    intents?: BitFieldResolvable<GatewayIntentsString, number>
 };
 
 export class SlasherClient extends Client {
@@ -31,18 +33,17 @@ export class SlasherClient extends Client {
     }
 
     private addCommandHandler() {
-        this.on("interactionCreate", async (interaction) => {
+        this.on(Events.InteractionCreate, async (cmd) => {
             // ignore the interaction if it's not a command
-            if(!interaction.isCommand()) return;
+            if(!cmd.isChatInputCommand()) return;
 
             // create command context object
-            let cmd = interaction as Command;
             let ctx: CommandContext = {
                 name: cmd.commandName,
                 command: cmd,
-                options: interaction.options,
+                options: cmd.options,
                 isServer: cmd.inGuild(),
-                isDM: (await cmd.user.createDM()).id === interaction.channelId,
+                isDM: (await cmd.user.createDM()).id === cmd.channelId,
                 channel: cmd.channel,
                 user: cmd.user,
                 client: this,
@@ -52,12 +53,12 @@ export class SlasherClient extends Client {
                     id: cmd.guild.id,
                     member: cmd.guild.members.resolve(cmd.user.id),
                     owner: cmd.user.id === cmd.guild.ownerId,
-                    isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has("ADMINISTRATOR"),
+                    isUserAdmin: cmd.guild.members.resolve(cmd.user.id).permissions.has(PermissionFlagsBits.Administrator),
                     channelPermissions: (cmd.channel as GuildChannel).permissionsFor(cmd.user)
                 } : undefined,
                 reply: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
+                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
                         contentOptions.ephemeral = hidden;
@@ -70,27 +71,27 @@ export class SlasherClient extends Client {
                         });
                     }
                 },
-                defer: async (hidden = false): Promise<void> => {
+                defer: async (hidden = false) => {
                     return await cmd.deferReply({
-                        ephemeral: hidden 
+                        ephemeral: hidden
                     });
                 },
                 edit: async (content) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
-                    let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as WebhookEditMessageOptions : undefined;
+                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionEditReplyOptions : undefined;
                     if(contentOptions) {
-                        return await cmd.editReply(contentOptions).then(m => m as Message);
+                        return await cmd.editReply(contentOptions);
                     } else {
                         return await cmd.editReply({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined
-                        }).then(m => m as Message);
+                        });
                     }
                 },
                 followUp: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && typeof (content as MessageEmbed).title !== "undefined" ? content as MessageEmbed : undefined;
+                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
                         contentOptions.ephemeral = hidden;
@@ -107,7 +108,7 @@ export class SlasherClient extends Client {
                     if(!options) {
                         options = { time: timeout };
                     }
-                    options.filter = options.filter ? options.filter : i => i.customId === modal.customId;
+                    options.filter = options.filter ? options.filter : i => i.customId === modal.data.custom_id;
                     options.time = options.time ? options.time : timeout;
                     await cmd.showModal(modal);
                     return await cmd.awaitModalSubmit(options);
@@ -115,7 +116,7 @@ export class SlasherClient extends Client {
             };
 
             // emit the command event with the context
-            this.emit("command", ctx);
+            this.emit(SlasherEvents.CommandCreate, ctx);
         });
     }
 
@@ -163,32 +164,33 @@ export declare interface SlasherClient {
 
 // gets the token from either the options or the auth.json file
 function getBotToken(options: SlasherClientOptions): string {
-    if(options.token) return options.token;
-    if(options.useAuth && fs.existsSync("auth.json")) {
+    if(options && options.token) return options.token;
+    if(fs.existsSync("auth.json")) {
         let data = fs.readFileSync("auth.json");
         let json = JSON.parse(data.toString());
         return json.token;
     } else {
         console.warn("Could not find bot token in client options or auth.json!");
-        console.warn("You must either provide a token or set useAuth to true!");
+        console.warn("You must either provide a token or create an auth.json file!");
     }
     return null;
 }
 
 // ensures the client options contains the GUILDS intent
 function filterOptions(options: SlasherClientOptions) {
+    // make sure valid options object is passed to client
+    if(!options) options = {};
+    else if(typeof options !== "object") throw "SlasherClient options must be an object!";
+    
     let finalOptions = options as ClientOptions;
     if(!options.intents) {
-        finalOptions.intents = [ Intents.FLAGS.GUILDS ];
+        finalOptions.intents = [ GatewayIntentBits.Guilds ];
     } else if (Array.isArray(options.intents)) {
-        finalOptions.intents = [ ...options.intents, Intents.FLAGS.GUILDS ];
+        finalOptions.intents = [ ...options.intents, GatewayIntentBits.Guilds ];
     } else if(typeof options.intents === "number") {
-        finalOptions.intents = options.intents | Intents.FLAGS.GUILDS;
+        finalOptions.intents = options.intents | GatewayIntentBits.Guilds;
     } else if(typeof options.intents === "string") {
-        // this probably shouldn't be used, but maybe the user
-        // needs a specific intent other than GUILDS? just leave
-        // it be
-        finalOptions.intents = options.intents as IntentsString;
+        finalOptions.intents = [options.intents, "Guilds"] as GatewayIntentsString[];
     }
     return finalOptions;
 }

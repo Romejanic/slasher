@@ -18,7 +18,7 @@ Adding options to a command is incredibly easy with Slasher. This guide will bri
 For an in-depth explanation of how to define options in a command, check out the [command.json guide](./command-json.md) first.
 
 ## Basic options
-For any options, you will need to use the `ctx.options` property on the `command` event. This property is an instance of [CommandOptions](../api/CommandOptions.md), so you can refer to that page for an in-depth reference.
+For any options, you will need to use the `ctx.options` property on the [CommandCreate](../api/SlasherEvents.md#commandcreate) event. This property is an instance of [CommandOptions](../api/CommandOptions.md), so you can refer to that page for an in-depth reference.
 
 But in summary, these are the most common methods you'll use:
 |Method|Return Type|Description|
@@ -29,9 +29,12 @@ But in summary, these are the most common methods you'll use:
 |`getNumber(name, ?required)`|?number|Gets a double number option|
 |`getBoolean(name, ?required)`|?boolean|Gets a boolean option|
 |`getUser(name, ?required)`|[?User](https://discord.js.org/#/docs/main/stable/class/User)|Gets a user option|
+|`getMember(name)`|[?GuildMember](https://discord.js.org/#/docs/discord.js/main/class/GuildMember)|Gets a member option in a server|
+|`getMessage(name, ?required)`|[?Message](https://discord.js.org/#/docs/discord.js/main/class/Message)|Gets a message option in a channel|
+|`getAttachment(name, ?required)`|[?Attachment](https://discord.js.org/#/docs/discord.js/main/class/Attachment)|Gets an attachment option|
 |`getChannel(name, ?required)`|[?GuildChannel](https://discord.js.org/#/docs/main/stable/class/GuildChannel)|Gets a channel option|
 |`getRole(name, ?required)`|[?Role](https://discord.js.org/#/docs/main/stable/class/Role)|Gets a role option|
-|`getMentionable((name, ?required))`|[?User](https://discord.js.org/#/docs/main/stable/class/User) or [?GuildMember](https://discord.js.org/#/docs/main/stable/class/GuildMember) or [?Role](https://discord.js.org/#/docs/main/stable/class/Role)|Gets a mentionable option|
+|`getMentionable(name, ?required)`|[?User](https://discord.js.org/#/docs/main/stable/class/User) or [?GuildMember](https://discord.js.org/#/docs/main/stable/class/GuildMember) or [?Role](https://discord.js.org/#/docs/main/stable/class/Role)|Gets a mentionable option|
 |`getSubcommand(?required)`|?string|The name of the subcommand which was run|
 |`getSubcommandGroup(?required)`|?string|The name of the subcommand group which was run|
 
@@ -62,7 +65,7 @@ The parameters of the functions work as follows:
 ```
 **Code**
 ```js
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "greet") {
         // gets user, falls back on sender if no target is set
         let user = ctx.options.getUser("target") || ctx.user;
@@ -100,7 +103,7 @@ In some cases, you will want to take a different action depending on whether an 
 ```
 **Code**
 ```js
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "search") {
         // get the search query
         let query  = ctx.options.getString("query", true);
@@ -149,7 +152,7 @@ You can simply use the `ctx.options.getSubcommand()` method to determine which s
 ```
 **Code**
 ```js
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "greet") {
         let user = null;
 
@@ -238,7 +241,7 @@ Taking the [/permissions example](https://discord.com/developers/docs/interactio
 ```
 **Code**
 ```js
-client.on("command", (ctx) => {
+client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "permissions") {
         let group = ctx.options.getSubcommandGroup();
         switch(ctx.options.getSubcommand()) {

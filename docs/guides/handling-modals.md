@@ -25,10 +25,10 @@ This guide is using a basic bot setup, with only one simple command in the `comm
 ```
 **index.js**
 ```js
-const { SlasherClient } = require("discord.js-slasher");
-const client = new SlasherClient({ useAuth: true });
+const { SlasherClient, SlasherEvents } = require("discord.js-slasher");
+const client = new SlasherClient();
 
-client.on("command", async ctx => {
+client.on(SlasherEvents.CommandCreate, async ctx => {
     if(ctx.name === "modal") {
         // code goes here
     }
@@ -43,11 +43,11 @@ We start by creating the modal. We can add multiple text fields (referred to a t
 Firstly we make the modal. The modal requires a custom ID and a title.
 
 ```js
-const { Modal } = require("discord.js");
+const { ModalBuilder } = require("discord.js");
 ...
 
 if(ctx.name === "modal") {
-    let modal = new Modal()
+    let modal = new ModalBuilder()
         .setTitle("Test Modal")
         .setCustomId("test_modal");
 }
@@ -56,27 +56,27 @@ if(ctx.name === "modal") {
 Then we add our text inputs to the modal (up to 5).
 
 ```js
-const { Modal, TextInputComponent, MessageActionRow } = require("discord.js");
+const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require("discord.js");
 ...
 
 if(ctx.name === "modal") {
-    let modal = new Modal()
+    let modal = new ModalBuilder()
         .setTitle("Test Modal")
         .setCustomId("test_modal");
 
-    let nameField = new TextInputComponent()
+    let nameField = new TextInputBuilder()
         .setLabel("What's your name?")
         .setPlaceholder("Name")
         .setCustomId("name")
-        .setStyle("SHORT");
-    let aboutField = new TextInputComponent()
+        .setStyle(TextInputStyle.Short);
+    let aboutField = new TextInputBuilder()
         .setLabel("Tell us about yourself")
         .setPlaceholder("About you...")
         .setCustomId("about")
-        .setStyle("PARAGRAPH");
+        .setStyle(TextInputStyle.Paragraph);
 
-    let nameRow = new MessageActionRow().addComponents(nameField);
-    let aboutRow = new MessageActionRow().addComponents(aboutField);
+    let nameRow = new ActionRowBuilder().addComponents(nameField);
+    let aboutRow = new ActionRowBuilder().addComponents(aboutField);
 
     modal.addComponents(nameRow, aboutRow);
 }
