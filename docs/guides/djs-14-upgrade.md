@@ -24,6 +24,30 @@ This will reinstall both discord.js and Slasher on the latest, correct major rel
 ### Updating the Slasher code
 The Slasher API has mostly remained the same. The main differences are the following:
 
+### Client constructor
+If you are using `auth.json`, you no longer need to pass `useAuth: true` in the client options. This will be inferred by default, and Slasher will only not read from `auth.json` if you pass a `token` as an option. So you can now remove `useAuth: true` from your client constructor. Otherwise, if you are not using any additional client options, you can remove the options object from the constructor entirely.
+
+**Before**
+```js
+const client = new SlasherClient({ useAuth: true });
+
+// more complex example
+const client = new SlasherClient({
+    useAuth: true,
+    intents: [ Intents.FLAGS.GUILD_MESSAGES ]
+});
+```
+
+**After**
+```js
+const client = new SlasherClient();
+
+// more complex example
+const client = new SlasherClient({
+    intents: [ GatewayIntentBits.GuildMessages ]
+});
+```
+
 ### SlasherEvents
 When defining your command listener, in order to align with the conventions set up by discord.js v14, there is a new enum type called [SlasherEvents](../api/SlasherEvents.md) which will contain entries for each valid client event on the [SlasherClient](../api/SlasherClient.md) class. To align with the new standards, you should update your command listener to match.
 

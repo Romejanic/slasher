@@ -26,7 +26,7 @@ This guide is using a basic bot setup, with only one simple command in the `comm
 **index.js**
 ```js
 const { SlasherClient, SlasherEvents } = require("discord.js-slasher");
-const client = new SlasherClient({ useAuth: true });
+const client = new SlasherClient();
 
 client.on(SlasherEvents.CommandCreate, async ctx => {
     if(ctx.name === "modal") {

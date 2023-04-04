@@ -137,10 +137,7 @@ You then need to create the client which will handle the events and logging into
 const client = new SlasherClient();
 ```
 
-The client constructor takes an argument, which is the [SlasherClientOptions](../api/SlasherClientOptions.md), and it is used to pass the token into the client. However, since we saved our details in the `auth.json` file, the client can actually read from it to get the token automatically! To do this, just write
-```js
-const client = new SlasherClient({ useAuth: true });
-```
+The client constructor takes an argument, which is the [SlasherClientOptions](../api/SlasherClientOptions.md), and it is used to pass the token into the client. However, since we saved our details in the `auth.json` file, the client can actually read from it to get the token automatically!
 
 And that's it! Just an FYI, there is also an option to supply the token directly if you are using a different method to store the bot's token (e.g. custom config file, [dotenv](https://www.npmjs.com/package/dotenv), etc). You can use it like so:
 ```js
@@ -148,7 +145,7 @@ const token  = ...; // token from somewhere
 const client = new SlasherClient({ token });
 ```
 
-However for this guide, you can just stick to the first method with `useAuth: true`.
+However for this guide, you can just stick to the first method with no options.
 
 Next up we need to add an event listener which will respond to our command. This will be fired whenever a user runs one of your bot's commands, and will provide a [context object](../api/CommandContext.md) with a data about the command, it's environment and it's sender.
 
@@ -213,7 +210,7 @@ const { SlasherClient, SlasherEvents } = require("discord.js-slasher");
 // import { Events } from 'discord.js';
 // import { SlasherClient, SlasherEvents } from 'discord.js-slasher';
 
-const client = new SlasherClient({ useAuth: true });
+const client = new SlasherClient();
 
 client.on(SlasherEvents.CommandCreate, (ctx) => {
     if(ctx.name === "test") {

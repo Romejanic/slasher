@@ -62,7 +62,7 @@ client.login(token);
 
 **After: No token (recommended)**
 ```js
-const client = new SlasherClient({ useAuth: true });
+const client = new SlasherClient();
 
 client.login();
 ```
