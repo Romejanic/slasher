@@ -2,6 +2,10 @@
 
 **Table of Contents**
 1. [Introduction](#introduction)
+2. [Step 1: Updating your Client](#step-1-updating-your-client)
+3. [Step 2: Defining your commands](#step-2-defining-your-commands)
+4. [Step 3: Deploying your bot](#step-3-deploying-your-bot)
+5. [What's next?](#whats-next)
 
 ## Introduction
 If you have an existing discord.js bot, it will be very easy to upgrade it to Slasher! If you are not familiar with Slasher and how it works, please check out the [Getting Started](./getting-started.md) guide first so you can learn the basics of how Slasher works.
@@ -129,7 +133,9 @@ const modal = new ModalBuilder();
 
 // before
 i.showModal(modal).then(() => {
-    const responsePromise = i.awaitModalSubmit({ filter: i => i.customId === modal.data.custom_id });
+    const responsePromise = i.awaitModalSubmit({
+        filter: i => i.customId === modal.data.custom_id
+    });
 });
 
 // after
@@ -137,4 +143,93 @@ const responsePromise = ctx.modalResponse(modal);
 ```
 
 ## Step 2: Defining your commands
+Slasher uses a custom JSON file format to define Discord commands. This format is far easier to write and define than building the commands in code. To deploy the commands, you use the included `slasher` CLI utility to deploy it rather than it being redeployed when the bot runs. For a full guide on this file on this file [see here](./command-json.md).
 
+Firstly make a `commands.json` file in the root of your project. The first thing you should add to this file is the JSON schema for Slasher, which will enable IDE autocomplete and validation of your command structure.
+
+```json
+{
+    "$schema": "https://raw.githubusercontent.com/Romejanic/slasher/master/schema.json"
+}
+```
+
+If you are using the `SlashCommandBuilder` class to define your commands, you should be able to translate them to the new JSON format. Each command is defined as a JSON object, with things like descriptions and options defined as properties on the command object.
+
+Here's a simple example of a command with a couple of options being translated to the new format. Handling the options in your code is identical (available with `ctx.options`).
+
+**Before**
+```js
+const data new SlashCommandBuilder()
+    .setName("mute")
+    .setDescription("Mute a user")
+    .addUserOption(option =>
+        option.setName("target")
+            .setDescription("Which user to target")
+            .setRequired(true)
+    )
+    .addStringOption(option =>
+        option.setName("reason")
+            .setDescription("The reason for muting the user")
+            .addChoices(
+                { name: "Spam", value: "reason_spam" },
+                { name: "Harassment", value: "reason_harassment" },
+                { name: "Other", value: "reason_other" }
+            )
+    )
+```
+
+**After**
+```json
+{
+    "$schema": "https://raw.githubusercontent.com/Romejanic/slasher/master/schema.json",
+
+    "mute": {
+        "description": "Mute a user",
+        "options": {
+            "target": {
+                "description": "Which user to target",
+                "type": "user",
+                "required": true
+            },
+            "reason": {
+                "description": "The reason for muting the user",
+                "choices": {
+                    "Spam": "reason_spam",
+                    "Harassment": "reason_harassment",
+                    "Other": "reason_other"
+                }
+            }
+        }
+    }
+}
+```
+
+As seen, the JSON format is far more concise than the vanilla equivalent using `SlashCommandBuilder`, and it is easier to read. It also does several things like option type inference to automatically detect the option type based on the context of some special properties (for example, the `reason` option is automatically infered to be a `string` property because all of the provided `choices` have string values). For more information about this, see the [commands.json format](./command-json.md) guide page.
+
+To deploy these commands to Discord, simply use the Slasher CLI by running `npx slasher`. This will ask you to confirm the possible command list, and then to choose whether to deploy your commands to either a single server or globally. As with vanilla discord.js, you should deploy commands to a single server for quick testing, and globally when you are doing a release as global rollouts are much slower.
+
+While running this CLI it will prompt you for your bot token, bot client ID and the server ID you want to deploy to. This will be saved to the `auth.json` file. This is used by both the CLI in future deployments and the bot client for logins so this file should be generated whenever you are deploying your bot. If you used the [suggested SlasherClient constructor](#step-1-updating-your-client), it will read from `auth.json` automatically.
+
+As with any file containing sensitive data, this file **SHOULD NEVER EVER** be committed to your code repository. If your bot has a `.gitignore` file the Slasher CLI will add an entry for this file automatically, when it does you should commit that change so you cannot accidentally commit your bot token to the repo. If you're using a different source control system, add it to the respective ignore file.
+
+Once all your commands are converted to the `commands.json` file, you can delete both your `SlashCommandBuilder`s and any code for deploying the commands using the `REST` API.
+
+## Step 3: Deploying your bot
+If you are deploying your bot manually, you should be able to run `npx slasher` manually to deploy your commands. Unless your commands change often, you won't need to redeploy your commands each time you deploy your bot.
+
+```sh
+$ git pull
+$ npm install
+$ npx slasher
+```
+
+Please watch this space as support for redeploying commands without manual intervention will be added in an upcoming version of Slasher.
+
+## What's next?
+Well done! Your bot should now be running on Slasher, and I hope you find it as useful for simplifying your bot as I do for my bots.
+
+- Learn about [the full command.js format](./command-json.md)
+- Learn about [adding command options](./adding-options.md)
+- Review the [SlasherClient](../api/SlasherClient.md) and [CommandContext](../api/CommandContext.md) API
+- Review the [Getting Started](./getting-started.md) guide for a step by step guide of building a basic Slasher bot
+- If you encounter any issues or have any ideas to improve Slasher, please [raise an issue]()
