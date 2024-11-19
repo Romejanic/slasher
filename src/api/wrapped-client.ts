@@ -26,7 +26,7 @@ export class SlasherClient extends Client {
 
     private botToken: string;
 
-    constructor(options: SlasherClientOptions) {
+    constructor(options?: SlasherClientOptions) {
         super(filterOptions(options));
         this.botToken = getBotToken(options);
         this.addCommandHandler();
@@ -163,7 +163,7 @@ export declare interface SlasherClient {
 }
 
 // gets the token from either the options or the auth.json file
-function getBotToken(options: SlasherClientOptions): string {
+function getBotToken(options?: SlasherClientOptions): string {
     if(options && options.token) return options.token;
     if(fs.existsSync("auth.json")) {
         let data = fs.readFileSync("auth.json");
@@ -177,7 +177,7 @@ function getBotToken(options: SlasherClientOptions): string {
 }
 
 // ensures the client options contains the GUILDS intent
-function filterOptions(options: SlasherClientOptions) {
+function filterOptions(options?: SlasherClientOptions) {
     // make sure valid options object is passed to client
     if(!options) options = {};
     else if(typeof options !== "object") throw "SlasherClient options must be an object!";
