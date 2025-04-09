@@ -9,7 +9,8 @@ import {
     PermissionFlagsBits,
     EmbedBuilder,
     InteractionEditReplyOptions,
-    GatewayIntentBits
+    GatewayIntentBits,
+    MessageFlags
 } from 'discord.js';
 import * as fs from 'fs';
 import { CommandContext } from './command-context';
@@ -61,19 +62,19 @@ export class SlasherClient extends Client {
                     let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
-                        contentOptions.ephemeral = hidden;
+                        if(hidden) contentOptions.flags = MessageFlags.Ephemeral;
                         return await cmd.reply(contentOptions);
                     } else {
                         return await cmd.reply({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined,
-                            ephemeral: hidden
+                            flags: hidden ? MessageFlags.Ephemeral : undefined
                         });
                     }
                 },
                 defer: async (hidden = false) => {
                     return await cmd.deferReply({
-                        ephemeral: hidden
+                        flags: hidden ? MessageFlags.Ephemeral : undefined
                     });
                 },
                 edit: async (content) => {
@@ -94,13 +95,13 @@ export class SlasherClient extends Client {
                     let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
-                        contentOptions.ephemeral = hidden;
+                        if(hidden) contentOptions.flags = MessageFlags.Ephemeral;
                         return await cmd.followUp(contentOptions).then(m => m as Message);
                     } else {
                         return await cmd.followUp({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined,
-                            ephemeral: hidden
+                            flags: hidden ? MessageFlags.Ephemeral : undefined
                         }).then(m => m as Message);
                     }
                 },
