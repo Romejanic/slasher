@@ -59,7 +59,7 @@ export class SlasherClient extends Client {
                 } : undefined,
                 reply: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentEmbed   = isEmbed(content) ? content : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
                         if(hidden) contentOptions.flags = MessageFlags.Ephemeral;
@@ -79,7 +79,7 @@ export class SlasherClient extends Client {
                 },
                 edit: async (content) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentEmbed   = isEmbed(content) ? content : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionEditReplyOptions : undefined;
                     if(contentOptions) {
                         return await cmd.editReply(contentOptions);
@@ -92,7 +92,7 @@ export class SlasherClient extends Client {
                 },
                 followUp: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentEmbed   = isEmbed(content) ? content : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
                         if(hidden) contentOptions.flags = MessageFlags.Ephemeral;
@@ -194,4 +194,10 @@ function filterOptions(options?: SlasherClientOptions) {
         finalOptions.intents = [options.intents, "Guilds"] as GatewayIntentsString[];
     }
     return finalOptions;
+}
+
+function isEmbed(content: unknown): content is EmbedBuilder {
+    return typeof content === "object" &&
+      (content instanceof EmbedBuilder) ||
+      (typeof content["data"] === "object" && typeof content["setAuthor"] === "function");
 }
