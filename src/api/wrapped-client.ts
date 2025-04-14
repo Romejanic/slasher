@@ -9,7 +9,8 @@ import {
     PermissionFlagsBits,
     EmbedBuilder,
     InteractionEditReplyOptions,
-    GatewayIntentBits
+    GatewayIntentBits,
+    MessageFlags
 } from 'discord.js';
 import * as fs from 'fs';
 import { CommandContext } from './command-context';
@@ -58,27 +59,27 @@ export class SlasherClient extends Client {
                 } : undefined,
                 reply: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentEmbed   = isEmbed(content) ? content : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
-                        contentOptions.ephemeral = hidden;
+                        if(hidden) contentOptions.flags = MessageFlags.Ephemeral;
                         return await cmd.reply(contentOptions);
                     } else {
                         return await cmd.reply({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined,
-                            ephemeral: hidden
+                            flags: hidden ? MessageFlags.Ephemeral : undefined
                         });
                     }
                 },
                 defer: async (hidden = false) => {
                     return await cmd.deferReply({
-                        ephemeral: hidden
+                        flags: hidden ? MessageFlags.Ephemeral : undefined
                     });
                 },
                 edit: async (content) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentEmbed   = isEmbed(content) ? content : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionEditReplyOptions : undefined;
                     if(contentOptions) {
                         return await cmd.editReply(contentOptions);
@@ -91,16 +92,16 @@ export class SlasherClient extends Client {
                 },
                 followUp: async (content, hidden = false) => {
                     let contentString  = typeof content === "string" ? content as string : undefined;
-                    let contentEmbed   = typeof content === "object" && content instanceof EmbedBuilder ? content as EmbedBuilder : undefined;
+                    let contentEmbed   = isEmbed(content) ? content : undefined;
                     let contentOptions = typeof content === "object" && contentEmbed == undefined ? content as InteractionReplyOptions : undefined;
                     if(contentOptions) {
-                        contentOptions.ephemeral = hidden;
+                        if(hidden) contentOptions.flags = MessageFlags.Ephemeral;
                         return await cmd.followUp(contentOptions).then(m => m as Message);
                     } else {
                         return await cmd.followUp({
                             content: contentString,
                             embeds: contentEmbed ? [contentEmbed] : undefined,
-                            ephemeral: hidden
+                            flags: hidden ? MessageFlags.Ephemeral : undefined
                         }).then(m => m as Message);
                     }
                 },
@@ -193,4 +194,10 @@ function filterOptions(options?: SlasherClientOptions) {
         finalOptions.intents = [options.intents, "Guilds"] as GatewayIntentsString[];
     }
     return finalOptions;
+}
+
+function isEmbed(content: unknown): content is EmbedBuilder {
+    return typeof content === "object" &&
+      (content instanceof EmbedBuilder) ||
+      (typeof content["data"] === "object" && typeof content["setAuthor"] === "function");
 }
