@@ -1,5 +1,4 @@
 import { CommandInteraction } from "discord.js";
-import CommandContext from "./context";
 
 export interface SlasherCommand {
 
@@ -13,6 +12,6 @@ export interface SlasherCommand {
      * The function which is called when this command is invoked which handles its execution.
      * @param ctx The command context containing information about the command.
      */
-    execute: (ctx: CommandContext) => unknown;
+    execute: (ctx: CommandInteraction) => unknown;
 
 }

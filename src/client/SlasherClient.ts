@@ -23,9 +23,7 @@ export default class SlasherClient extends Client {
             const cmd = this.slasherOptions.commands.find(v => v.name === i.commandName);
             if(cmd) {
                 try {
-                    await cmd.execute({
-                        command: i
-                    });
+                    await cmd.execute(i);
                 } catch(e) {
                     console.error("Error while running command", e);
                     const embed = makeErrorEmbed("Error running command", "Sorry, an error occurred while running this command. If the problem persists please contact the bot developer.");
