@@ -1,4 +1,4 @@
-import { ClientOptions, BitFieldResolvable, GatewayIntentsString, GuildResolvable } from "discord.js";
+import { ClientOptions, GuildResolvable } from "discord.js";
 import { SlasherCommand } from "../commands";
 
 /** Type for controlling sync mode of client */
@@ -7,7 +7,7 @@ export type CommandSyncMode = "auto" | "force-global" | "force-server" | "disabl
 /** Additional options for SlasherClient */
 export type SlasherClientOptions = Omit<ClientOptions, "intents"> & {
     /** List of gateway intents */
-    intents?: BitFieldResolvable<GatewayIntentsString, number>;
+    intents?: ClientOptions["intents"];
     /** List of commands to process */
     commands?: SlasherCommand[];
     /** Configuration for command sync functionality */
