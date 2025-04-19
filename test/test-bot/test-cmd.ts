@@ -1,3 +1,4 @@
+import { userMention } from "discord.js";
 import { type SlasherCommand } from "../../src/commands";
 
 const testCommand: SlasherCommand = {
@@ -6,8 +7,10 @@ const testCommand: SlasherCommand = {
     description: "A test of Slasher v2",
 
     async execute(ctx) {
-        ctx.command.reply({
-            content: "Hello world"
+        await ctx.command.deferReply();
+        if(Math.random() > 0.5) throw new Error("Oopsie");
+        await ctx.command.editReply({
+            content: `Hello world, ${userMention(ctx.command.user.id)}`
         });
     }
 

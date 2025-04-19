@@ -1,5 +1,6 @@
-import { BitFieldResolvable, Client, ClientOptions, EmbedBuilder, Events, GatewayIntentBits, GatewayIntentsString, Interaction } from "discord.js";
-import { SlasherCommand } from "../commands";
+import { Client, ClientOptions, Events, GatewayIntentBits, Interaction } from "discord.js";
+import { makeErrorEmbed } from "./util";
+import { SlasherClientOptions } from "./const";
 
 export default class SlasherClient extends Client {
 
@@ -21,27 +22,24 @@ export default class SlasherClient extends Client {
         if(this.slasherOptions.commands) {
             const cmd = this.slasherOptions.commands.find(v => v.name === i.commandName);
             if(cmd) {
-                await cmd.execute({
-                    command: i
-                });
+                try {
+                    await cmd.execute({
+                        command: i
+                    });
+                } catch(e) {
+                    console.error("Error while running command", e);
+                    const embed = makeErrorEmbed("Error running command", "Sorry, an error occurred while running this command. If the problem persists please contact the bot developer.");
+                    if(i.replied || i.deferred) await i.editReply({ embeds: [embed] });
+                    else await i.reply({ embeds: [embed] });
+                }
             } else {
-                const embed = new EmbedBuilder()
-                    .setTitle("Command not found")
-                    .setColor("Red")
-                    .setDescription("Sorry, this command does not exist. Please contact the bot developer if you believe this is in error.");
+                const embed = makeErrorEmbed("Command not found", "Sorry, this command does not exist. Please contact the bot developer if you believe this is in error.");
                 await i.reply({ embeds: [embed] });
             }
         }
     }
 
 }
-
-export type SlasherClientOptions = Omit<ClientOptions, "intents"> & {
-    /** List of gateway intents */
-    intents?: BitFieldResolvable<GatewayIntentsString, number>;
-    /** List of commands to process */
-    commands?: SlasherCommand[];
-};
 
 function makeOptions(options?: SlasherClientOptions): ClientOptions {
     if(!options) {
