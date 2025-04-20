@@ -34,7 +34,7 @@ export default class SlasherClient extends Client {
                 try {
                     await cmd.execute(i);
                 } catch(e) {
-                    console.error("Error while running command", e);
+                    this.logger.error("Error while running command", e);
                     const embed = makeErrorEmbed("Error running command", "Sorry, an error occurred while running this command. If the problem persists please contact the bot developer.");
                     if(i.replied || i.deferred) await i.editReply({ embeds: [embed] });
                     else await i.reply({ embeds: [embed] });
@@ -50,7 +50,7 @@ export default class SlasherClient extends Client {
         const result = await super.login(token);
         if(result) {
             this.startCommandSync()
-                .catch(err => console.error("Failed to run command sync", err));
+                .catch(err => this.logger.error("Failed to run command sync", err));
         }
         return result;
     }
