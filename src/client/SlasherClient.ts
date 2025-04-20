@@ -1,6 +1,7 @@
 import { Client, ClientOptions, Events, GatewayIntentBits, Interaction } from "discord.js";
 import { makeErrorEmbed } from "./util";
 import { SlasherClientOptions } from "./const";
+import syncCommandDefinitions from "../sync";
 
 export default class SlasherClient extends Client {
 
@@ -35,6 +36,22 @@ export default class SlasherClient extends Client {
                 await i.reply({ embeds: [embed] });
             }
         }
+    }
+
+    public async login(token?: string) {
+        const result = await super.login(token);
+        if(result) {
+            this.startCommandSync()
+                .catch(err => console.error("Failed to run command sync", err));
+        }
+        return result;
+    }
+
+    private async startCommandSync() {
+        const mode = this.slasherOptions.sync?.mode || "auto";
+        const destructive = this.slasherOptions.sync?.destructive || true;
+        const serverId = this.slasherOptions.sync?.syncServerId;
+        syncCommandDefinitions(this, this.slasherOptions.commands, mode, destructive, serverId);
     }
 
 }
