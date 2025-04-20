@@ -5,7 +5,10 @@ import testCommand from "./test-cmd";
 const client = new SlasherClient({
     commands: [
         testCommand
-    ]
+    ],
+    logger: {
+        level: "debug"
+    }
 });
 
 client.on(Events.ClientReady, () => {
