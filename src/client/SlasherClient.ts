@@ -1,7 +1,7 @@
 import { Client, ClientOptions, Events, GatewayIntentBits, Interaction } from "discord.js";
 import { makeErrorEmbed } from "./util";
 import { SlasherClientOptions } from "./const";
-import syncCommandDefinitions from "../sync";
+import syncCommandDefinitions, { EffectiveChangeMode } from "../sync";
 import SlasherLogger from "../logger";
 
 export default class SlasherClient extends Client {
@@ -12,14 +12,13 @@ export default class SlasherClient extends Client {
     constructor(options?: SlasherClientOptions) {
         super(makeOptions(options));
         this.slasherOptions = options;
-        // set up logger
         this.slasherLogger = new SlasherLogger(options?.logger?.level || "warn", options?.logger?.prefix);
         // register interaction handler only if commands are passed
         if(options && options.commands) {
             this.on(Events.InteractionCreate, this.handleInteraction.bind(this));
         }
         // register ready handler
-        this.on(Events.ClientReady, () => {
+        this.once(Events.ClientReady, () => {
             this.slasherLogger.debug(`Slasher client ready (user: ${this.user.tag})`);
         });
     }
@@ -40,6 +39,7 @@ export default class SlasherClient extends Client {
                     else await i.reply({ embeds: [embed] });
                 }
             } else {
+                this.logger.warn(`Unknown command /${i.commandName}, commands may be out of date`);
                 const embed = makeErrorEmbed("Command not found", "Sorry, this command does not exist. Please contact the bot developer if you believe this is in error.");
                 await i.reply({ embeds: [embed] });
             }
@@ -58,8 +58,10 @@ export default class SlasherClient extends Client {
     private async startCommandSync() {
         const mode = this.slasherOptions.sync?.mode || "auto";
         const destructive = this.slasherOptions.sync?.destructive || true;
+        const dryRun = this.slasherOptions.sync?.dryRun || false;
         const serverId = this.slasherOptions.sync?.syncServerId;
-        syncCommandDefinitions(this, this.slasherOptions.commands, mode, destructive, serverId);
+        const changeMode: EffectiveChangeMode = dryRun ? "dry-run" : destructive ? "destructive" : "non-destructive";
+        await syncCommandDefinitions(this, this.slasherOptions.commands, mode, changeMode, serverId);
     }
 
     public get logger() {

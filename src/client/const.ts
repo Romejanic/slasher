@@ -1,4 +1,4 @@
-import { ClientOptions, GuildResolvable } from "discord.js";
+import { ClientOptions, Snowflake } from "discord.js";
 import { SlasherCommand } from "../commands";
 import { LogLevel } from "../logger";
 
@@ -18,7 +18,9 @@ export type SlasherClientOptions = Omit<ClientOptions, "intents"> & {
         /** Determines whether the command sync should delete undefined/removed commands. Default: `true` */
         destructive?: boolean;
         /** The ID of the server to sync commands to for development purposes. If mode is "auto", this option will force a server sync. */
-        syncServerId?: GuildResolvable;
+        syncServerId?: Snowflake;
+        /** Dry run, if set to `true` changes will not be applied and will be printed instead. Default: `false` */
+        dryRun?: boolean;
     };
     /** Configuration for Slasher logger */
     logger?: {

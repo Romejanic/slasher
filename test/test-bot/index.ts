@@ -6,6 +6,10 @@ const client = new SlasherClient({
     commands: [
         testCommand
     ],
+    sync: {
+        syncServerId: "883650514431148053",
+        dryRun: true
+    },
     logger: {
         level: "debug"
     }
