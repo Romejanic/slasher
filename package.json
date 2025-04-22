@@ -23,8 +23,7 @@
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "scripts": {
-        "build": "tsc && npm link",
-        "dev": "tsc -w"
+        "test": "bun test"
     },
     "bin": {
         "slasher": "build/src/slasher.js"
@@ -39,6 +38,6 @@
         "discord.js": "^14.18.0"
     },
     "devDependencies": {
-        "typescript": "^5.8.3"
+        "@types/bun": "^1.2.10"
     }
 }

@@ -111,3 +111,7 @@ commands.json
 
 # Bot Authorisation File
 /auth.json
+
+# Other lockfiles
+package-lock.json
+yarn.lock
