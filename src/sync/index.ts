@@ -4,6 +4,7 @@ import { CommandSyncMode } from "../client/const";
 import { SlasherCommand } from "../commands";
 import syncRoutes from "./routes";
 import buildApiCommand from "../commands/api";
+import checkCommandDiff from "../commands/diff";
 
 export type EffectiveSyncMode = "global" | "server" | "none";
 export type EffectiveChangeMode = "destructive" | "non-destructive" | "dry-run";
@@ -25,21 +26,21 @@ export default async function syncCommandDefinitions(client: SlasherClient, comm
     const routes = syncRoutes(mode, client.application.id, serverId);
     const existingCommands = await rest.get(routes.commands) as RESTGetAPIApplicationCommandsResult;
 
-    // TODO: determine if change is required
-    // if(commands.every(cmd => existingCommands.findIndex(v => v.name === cmd.name) > -1)) {
-
-    // }
-
     // convert each command definition to a command builder
-    const newCommandList = new Array<RESTPostAPIApplicationCommandsJSONBody>();
+    const commandList = new Array<RESTPostAPIApplicationCommandsJSONBody>();
     for(const command of commands) {
-        newCommandList.push(buildApiCommand(command).toJSON());
+        commandList.push(buildApiCommand(command).toJSON());
     }
+
+    const modifiedCommands = new Array<RESTPostAPIApplicationCommandsJSONBody>();
+    const removedCommands = new Array<APIApplicationCommand>();
+    logger.debug("eq:", checkCommandDiff(commandList[0], existingCommands[0]));
+
 
     // update commands with discord
     try {
         await rest.put(routes.commands, {
-            body: newCommandList
+            body: commandList
         });
         logger.info("Successfully updated commands");
     } catch(e) {
