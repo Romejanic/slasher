@@ -1,6 +1,12 @@
 import { APIApplicationCommand, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import {diff} from "deep-object-diff";
 
+/**
+ * Compares a defined command with an API command and determines if they are equal.
+ * @param def The command definition to check
+ * @param apiCmd The API command to compare against
+ * @returns true if the commands are the same, false otherwise
+ */
 export default function checkCommandDiff(def: RESTPostAPIApplicationCommandsJSONBody, apiCmd: APIApplicationCommand) {
     // remove fields which are not required for comparison
     const cmdData = structuredClone(apiCmd);

@@ -32,32 +32,43 @@ export default async function syncCommandDefinitions(client: SlasherClient, comm
         commandList.push(buildApiCommand(command).toJSON());
     }
 
-    const modifiedCommands = new Array<RESTPostAPIApplicationCommandsJSONBody>();
-    const removedCommands = new Array<APIApplicationCommand>();
-    logger.debug("eq:", checkCommandDiff(commandList[0], existingCommands[0]));
+    const commandsAdd = new Array<RESTPostAPIApplicationCommandsJSONBody>();
+    const commandsEdit = new Array<RESTPostAPIApplicationCommandsJSONBody>();
+    const commandsSame = new Array<RESTPostAPIApplicationCommandsJSONBody>();
 
-
-    // update commands with discord
-    try {
-        await rest.put(routes.commands, {
-            body: commandList
-        });
-        logger.info("Successfully updated commands");
-    } catch(e) {
-        logger.error("Failed to update app commands", e);
+    // determine which commands need to be added or edited
+    for(const command of commandList) {
+        const existing = existingCommands.find(cmd => cmd.name === command.name);
+        if(!existing) commandsAdd.push(command);
+        else if(!checkCommandDiff(command, existing)) commandsEdit.push(command);
+        else commandsSame.push(command);
     }
 
-    // TODO: change behaviour based on change mode
-    // switch(changeMode) {
-    //     case "dry-run":
+    // get list of commands to delete if command name is not found in commands list
+    const commandsDelete = existingCommands.filter(cmd => commandList.findIndex(def => cmd.name === def.name) < 0);
 
-    //         break;
-    //     case "non-destructive":
-    //         break;
-    //     case "destructive":
-    //     default:
-    //         break;
-    // }
+    // TODO: change behaviour based on change mode
+    switch(changeMode) {
+        case "dry-run":
+            logger.info("====== SLASHER DRY RUN ======");
+            logger.info("Changes have not been applied to Discord. Set \"dryRun\" to false to apply changes.");
+            logger.info("Added commands:", commandsAdd.length);
+            logger.info("\t", commandsAdd.map(cmd => `/${cmd.name}`).join(", "));
+            logger.info("Modified commands:", commandsEdit.length);
+            logger.info("\t", commandsEdit.map(cmd => `/${cmd.name}`).join(", "));
+            logger.info("Deleted commands:", commandsDelete.length);
+            logger.info("\t", commandsDelete.map(cmd => `/${cmd.name}`).join(", "));
+            logger.info("Unchanged commands:", commandsSame.length);
+            logger.info("\t", commandsSame.map(cmd => `/${cmd.name}`).join(", "));
+            break;
+        case "non-destructive":
+            logger.error("NOT IMPLEMENTED");
+            break;
+        case "destructive":
+        default:
+            logger.error("NOT IMPLEMENTED");
+            break;
+    }
 }
 
 function getEffectiveMode(mode: CommandSyncMode, serverId?: GuildResolvable): EffectiveSyncMode {
