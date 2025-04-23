@@ -47,17 +47,24 @@ export default async function syncCommandDefinitions(client: SlasherClient, comm
     // get list of commands to delete if command name is not found in commands list
     const commandsDelete = existingCommands.filter(cmd => commandList.findIndex(def => cmd.name === def.name) < 0);
 
+    // determine if action is required based on if any changes are required
+    const actionRequired = commandsAdd.length > 0 || commandsEdit.length > 0 || commandsDelete.length > 0;
+
     // TODO: change behaviour based on change mode
     switch(changeMode) {
         case "dry-run":
             logger.info("====== SLASHER DRY RUN ======");
-            logger.info("Changes have not been applied to Discord. Set \"dryRun\" to false to apply changes.");
-            logger.info("Added commands:", commandsAdd.length);
-            logger.info("\t", commandsAdd.map(cmd => `/${cmd.name}`).join(", "));
-            logger.info("Modified commands:", commandsEdit.length);
-            logger.info("\t", commandsEdit.map(cmd => `/${cmd.name}`).join(", "));
-            logger.info("Deleted commands:", commandsDelete.length);
-            logger.info("\t", commandsDelete.map(cmd => `/${cmd.name}`).join(", "));
+            if(actionRequired) {
+                logger.info("Changes have not been applied to Discord. Set \"dryRun\" to false to apply changes.");
+                logger.info("Added commands:", commandsAdd.length);
+                logger.info("\t", commandsAdd.map(cmd => `/${cmd.name}`).join(", "));
+                logger.info("Modified commands:", commandsEdit.length);
+                logger.info("\t", commandsEdit.map(cmd => `/${cmd.name}`).join(", "));
+                logger.info("Deleted commands:", commandsDelete.length);
+                logger.info("\t", commandsDelete.map(cmd => `/${cmd.name}`).join(", "));
+            } else {
+                logger.info("No actions are required, there were no modifications made.");
+            }
             logger.info("Unchanged commands:", commandsSame.length);
             logger.info("\t", commandsSame.map(cmd => `/${cmd.name}`).join(", "));
             break;
