@@ -1,10 +1,10 @@
 {
   "name": "test-bot",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun run index.ts"
+    "start": "bun run src/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -1,4 +1,4 @@
-import type { SlasherCommand } from "../../src/commands";
+import type { SlasherCommand } from "../../../src/commands";
 
 const debugCommand: SlasherCommand = {
     name: "debug",

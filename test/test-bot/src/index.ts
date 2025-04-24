@@ -1,5 +1,5 @@
 import { Events } from "discord.js";
-import SlasherClient from "../../src/client";
+import SlasherClient from "../../../src/client";
 import testCommand from "./test-cmd";
 import debugCommand from "./debug-cmd";
 
