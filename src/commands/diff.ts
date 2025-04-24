@@ -19,8 +19,24 @@ export default function checkCommandDiff(def: RESTPostAPIApplicationCommandsJSON
     // check objects are the same
     // (ignore undefined diffs)
     const objDiff = diff(cmdData, def);
-    for(const key in objDiff) {
-        if(typeof objDiff[key] !== "undefined") return false;
+    return checkObjectDiff(objDiff);
+}
+
+function checkObjectDiff(diff: object) {
+    if(diff === null || typeof diff === "undefined") return true;
+    // special case for array
+    if(Array.isArray(diff)) {
+        return diff.reduce<boolean>((flag, val) => flag && checkObjectDiff(val), true);
+    }
+    // compare each key in diff
+    for(const key in diff) {
+        if(typeof diff[key] !== "undefined" || diff[key] === null) {
+            if(typeof diff[key] === "object") {
+                return checkObjectDiff(diff[key]);
+            } else {
+                return false;
+            }
+        }
     }
     return true;
 }
