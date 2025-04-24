@@ -73,7 +73,7 @@ export default async function syncCommandDefinitions(client: SlasherClient, comm
 
         // print debug messages
         logger.debug("add:", commandsAdd.length, "modify:", commandsEdit.length, "unchanged:", commandsSame.length, "delete:", commandsDelete.length);
-        if(mode === "global") logger.debug("Global updates may take up to an hour to reflect");
+        if(mode === "global") logger.debug("Global updates may take some time to reflect");
 
         // determine if sync is a delete-only operation
         const deleteOnly = commandsAdd.length === 0 && commandsEdit.length === 0 && commandsDelete.length > 0;
