@@ -25,8 +25,14 @@ export default function checkCommandDiff(def: RESTPostAPIApplicationCommandsJSON
 function checkObjectDiff(diff: object) {
     if(diff === null || typeof diff === "undefined") return true;
     // special case for array
-    if(Array.isArray(diff)) {
-        return diff.reduce<boolean>((flag, val) => flag && checkObjectDiff(val), true);
+    if(checkArray(diff)) {
+        let flag = true;
+        for(const key in diff) {
+            // ONLY for arrays undefined means item was removed
+            if(typeof diff[key] === "undefined") flag = false;
+            flag = flag && checkObjectDiff(diff[key]);
+        }
+        return flag;
     }
     // compare each key in diff
     for(const key in diff) {
@@ -39,4 +45,11 @@ function checkObjectDiff(diff: object) {
         }
     }
     return true;
+}
+
+function checkArray(diff: unknown): diff is Array<object> {
+    return Array.isArray(diff) || (
+        typeof diff === "object" &&
+        Object.keys(diff).every(key => key.match("^[0-9]+$") !== null)
+    );
 }

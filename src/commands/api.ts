@@ -85,7 +85,7 @@ function buildOption(builder: SlashCommandBuilder, name: string, option: Slasher
 function initStandardValues<T extends ApplicationCommandOptionBase>(builder: T, name: string, option: SlasherCommandOption) {
     return builder.setName(name)
         .setDescription(option.description)
-        .setRequired(option.required)
+        .setRequired(option.required ?? false)
         .setNameLocalizations(option.localizations?.name ?? null)
         .setDescriptionLocalizations(option.localizations?.description ?? null);
 }
