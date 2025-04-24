@@ -1,4 +1,6 @@
-import { CommandInteraction, Permissions } from "discord.js";
+import { CommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
+
+export type CommandPermissions = PermissionsString[];
 
 export interface CommandContexts {
     /** Allows this command to be used in servers. */
@@ -27,8 +29,14 @@ export interface SlasherCommand {
     /** Whether the command can only be used in age-restricted channels. */
     nsfw?: boolean;
 
+    /** Mapping of localizations for the name and description of the command. */
+    localizations?: Partial<{
+        name: LocalizationMap;
+        description: LocalizationMap;
+    }>;
+
     /** The default permissions applied to your command. This can be overridden by server owners. */
-    defaultPermissions?: Permissions | bigint | number;
+    defaultPermissions?: CommandPermissions;
 
     /** The contexts in which the command can be used. */
     contexts?: Partial<CommandContexts>;

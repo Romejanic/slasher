@@ -1,5 +1,5 @@
-import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
-import { CommandContexts, InstallScope } from ".";
+import { ApplicationIntegrationType, InteractionContextType, PermissionFlagsBits } from "discord.js";
+import { CommandContexts, CommandPermissions, InstallScope } from ".";
 
 export function getInteractionContexts(contexts: Partial<CommandContexts>) {
     const types = new Array<InteractionContextType>();
@@ -14,4 +14,12 @@ export function getIntegrationTypes(scope: Partial<InstallScope>) {
     if(scope.server) types.push(ApplicationIntegrationType.GuildInstall);
     if(scope.user) types.push(ApplicationIntegrationType.UserInstall);
     return types;
+}
+
+export function getPermissionBits(permissions: CommandPermissions) {
+    let perm = BigInt(0);
+    for(const name of permissions) {
+        perm |= PermissionFlagsBits[name];
+    }
+    return perm;
 }
