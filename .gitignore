@@ -115,3 +115,6 @@ commands.json
 # Other lockfiles
 package-lock.json
 yarn.lock
+
+# Mac stuff
+.DS_Store
