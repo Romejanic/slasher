@@ -1,10 +1,11 @@
-import { APIApplicationCommand, GuildResolvable, RESTGetAPIApplicationCommandsResult, RESTPostAPIApplicationCommandsJSONBody, SlashCommandBuilder, Snowflake } from "discord.js";
+import { GuildResolvable, RESTGetAPIApplicationCommandsResult, RESTPostAPIApplicationCommandsJSONBody, Snowflake } from "discord.js";
 import SlasherClient from "../client";
 import { CommandSyncMode } from "../client/const";
 import { SlasherCommand } from "../commands";
 import syncRoutes from "./routes";
 import buildApiCommand from "../commands/api";
 import checkCommandDiff from "../commands/diff";
+import { deleteCommands, updateCommands } from "./apply";
 
 export type EffectiveSyncMode = "global" | "server" | "none";
 export type EffectiveChangeMode = "destructive" | "non-destructive" | "dry-run";
@@ -50,31 +51,52 @@ export default async function syncCommandDefinitions(client: SlasherClient, comm
     // determine if action is required based on if any changes are required
     const actionRequired = commandsAdd.length > 0 || commandsEdit.length > 0 || commandsDelete.length > 0;
 
-    // TODO: change behaviour based on change mode
-    switch(changeMode) {
-        case "dry-run":
-            logger.info("====== SLASHER DRY RUN ======");
-            if(actionRequired) {
-                logger.info("Changes have not been applied to Discord. Set \"dryRun\" to false to apply changes.");
-                logger.info("Added commands:", commandsAdd.length);
-                logger.info("\t", commandsAdd.map(cmd => `/${cmd.name}`).join(", "));
-                logger.info("Modified commands:", commandsEdit.length);
-                logger.info("\t", commandsEdit.map(cmd => `/${cmd.name}`).join(", "));
-                logger.info("Deleted commands:", commandsDelete.length);
-                logger.info("\t", commandsDelete.map(cmd => `/${cmd.name}`).join(", "));
-            } else {
-                logger.info("No actions are required, there were no modifications made.");
+    // act depending on the change mode
+    if(changeMode === "dry-run") {
+        logger.info("====== SLASHER DRY RUN ======");
+        if(actionRequired) {
+            logger.info("Changes have not been applied to Discord. Set \"dryRun\" to false to apply changes.");
+            logger.info("Added commands:", commandsAdd.length);
+            logger.info("\t", commandsAdd.map(cmd => `/${cmd.name}`).join(", "));
+            logger.info("Modified commands:", commandsEdit.length);
+            logger.info("\t", commandsEdit.map(cmd => `/${cmd.name}`).join(", "));
+            logger.info("Deleted commands:", commandsDelete.length);
+            logger.info("\t", commandsDelete.map(cmd => `/${cmd.name}`).join(", "));
+        } else {
+            logger.info("No actions are required, there were no modifications made");
+        }
+        logger.info("Unchanged commands:", commandsSame.length);
+        logger.info("\t", commandsSame.map(cmd => `/${cmd.name}`).join(", "));
+    } else if(actionRequired) {
+        // action is required so we will update the commands
+        let payloads = [ ...commandsAdd, ...commandsEdit, ...commandsSame ];
+
+        // print debug messages
+        logger.debug("add:", commandsAdd.length, "modify:", commandsEdit.length, "unchanged:", commandsSame.length, "delete:", commandsDelete.length);
+        if(mode === "global") logger.debug("Global updates may take up to an hour to reflect");
+
+        // determine if sync is a delete-only operation
+        const deleteOnly = commandsAdd.length === 0 && commandsEdit.length === 0 && commandsDelete.length > 0;
+        
+        // either delete or preserve removed commands depending on mode
+        if(changeMode === "destructive") {
+            await deleteCommands(commandsDelete, rest, routes, logger);
+        } else {
+            logger.debug(`Non-destructive mode, deleted commands will be preserved`);
+            payloads = [ ...payloads, ...commandsDelete ];
+            // if all other commands are unchanged there's nothing to do
+            if(deleteOnly) {
+                logger.debug("Skipping sync as there are no other modifications required");
+                return;
             }
-            logger.info("Unchanged commands:", commandsSame.length);
-            logger.info("\t", commandsSame.map(cmd => `/${cmd.name}`).join(", "));
-            break;
-        case "non-destructive":
-            logger.error("NOT IMPLEMENTED");
-            break;
-        case "destructive":
-        default:
-            logger.error("NOT IMPLEMENTED");
-            break;
+        }
+
+        // apply changes to all other commands
+        if(!deleteOnly) {
+            await updateCommands(payloads, rest, routes, logger);
+        }
+    } else {
+        logger.debug("Sync not required, there were no modifications made");
     }
 }
 

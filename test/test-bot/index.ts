@@ -1,15 +1,13 @@
 import { Events } from "discord.js";
 import SlasherClient from "../../src/client";
 import testCommand from "./test-cmd";
+import debugCommand from "./debug-cmd";
 
 const client = new SlasherClient({
     commands: [
-        testCommand
+        testCommand,
+        debugCommand
     ],
-    sync: {
-        syncServerId: "883650514431148053",
-        dryRun: true
-    },
     logger: {
         level: "debug"
     }

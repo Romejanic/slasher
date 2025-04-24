@@ -57,8 +57,8 @@ export default class SlasherClient extends Client {
 
     private async startCommandSync() {
         const mode = this.slasherOptions.sync?.mode || "auto";
-        const destructive = this.slasherOptions.sync?.destructive || true;
-        const dryRun = this.slasherOptions.sync?.dryRun || false;
+        const destructive = this.slasherOptions.sync?.destructive ?? true;
+        const dryRun = this.slasherOptions.sync?.dryRun ?? false;
         const serverId = this.slasherOptions.sync?.syncServerId;
         const changeMode: EffectiveChangeMode = dryRun ? "dry-run" : destructive ? "destructive" : "non-destructive";
         await syncCommandDefinitions(this, this.slasherOptions.commands, mode, changeMode, serverId);
