@@ -1,5 +1,7 @@
 import { CommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
+import SlasherCommandOption from "./options";
 
+/** Array of permissions which are required to execute a command. */
 export type CommandPermissions = PermissionsString[];
 
 export interface CommandContexts {
@@ -28,6 +30,9 @@ export interface SlasherCommand {
 
     /** Whether the command can only be used in age-restricted channels. */
     nsfw?: boolean;
+
+    /** Options for this command. The key is used to identify the option name. */
+    options?: Record<string, SlasherCommandOption>;
 
     /** Mapping of localizations for the name and description of the command. */
     localizations?: Partial<{
