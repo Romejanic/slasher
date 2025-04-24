@@ -1,4 +1,4 @@
-import { ChannelType, LocalizationMap } from "discord.js";
+import { ApplicationCommandOptionAllowedChannelTypes, LocalizationMap } from "discord.js";
 
 // TODO:
 // subcommand
@@ -31,7 +31,7 @@ export interface BooleanOption extends BaseOption {
 export interface ChannelOption extends BaseOption {
     readonly type: "channel";
     /** What type of channels can be selected for this option. */
-    channelTypes?: Omit<ChannelType, ChannelType.DM | ChannelType.GroupDM>;
+    channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
 }
 
 export interface IntegerOption extends BaseOption {
