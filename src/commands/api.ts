@@ -1,7 +1,9 @@
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionBase, SlashCommandBuilder } from "discord.js";
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionBase, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
 import { getIntegrationTypes, getInteractionContexts, getPermissionBits } from "./util";
 import SlasherCommand from "./types/SlasherCommand";
 import SlasherCommandOption from "./options";
+import { isSubcommands, Subcommand } from "./types/SlasherSubcommands";
+import { isSubcommandGroups, SubcommandGroup } from "./types/SlasherSubcommandGroups";
 
 export default function buildApiCommand(command: SlasherCommand) {
     const builder = new SlashCommandBuilder();
@@ -10,8 +12,16 @@ export default function buildApiCommand(command: SlasherCommand) {
         .setDescription(command.description)
         .setDefaultMemberPermissions(command.defaultPermissions ? getPermissionBits(command.defaultPermissions) : null)
         .setNSFW(command.nsfw ?? false);
-    // add options
-    if(command.options) {
+    // add options or subcommands
+    if(isSubcommands(command)) {
+        for(const name in command.subcommands) {
+            buildSubcommand(builder, name, command.subcommands[name]);
+        }
+    } else if(isSubcommandGroups(command)) {
+        for(const name in command.groups) {
+            buildSubcommandGroup(builder, name, command.groups[name]);
+        }
+    } else if(command.options) {
         for(const name in command.options) {
             buildOption(builder, name, command.options[name]);
         }
@@ -25,7 +35,7 @@ export default function buildApiCommand(command: SlasherCommand) {
     return builder;
 }
 
-function buildOption(builder: SlashCommandBuilder, name: string, option: SlasherCommandOption) {
+function buildOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder, name: string, option: SlasherCommandOption) {
     switch(option.type) {
         case "attachment":
             return builder.addAttachmentOption(attachOption => {
@@ -80,6 +90,38 @@ function buildOption(builder: SlashCommandBuilder, name: string, option: Slasher
         default:
             break;
     }
+}
+
+function buildSubcommand(builder: SlashCommandBuilder, name: string, subcommand: Subcommand) {
+    return builder.addSubcommand(sub => {
+        // set basic subcommand details
+        sub.setName(name)
+            .setDescription(subcommand.description)
+            .setNameLocalizations(subcommand.localizations?.name ?? null)
+            .setDescriptionLocalizations(subcommand.localizations?.description ?? null);
+        // add options if required
+        if(subcommand.options) {
+            for(const optionName in subcommand.options) {
+                buildOption(sub, optionName, subcommand.options[optionName]);
+            }
+        }
+        return sub;
+    });
+}
+
+function buildSubcommandGroup(builder: SlashCommandBuilder, name: string, subcommandGroup: SubcommandGroup) {
+    return builder.addSubcommandGroup(group => {
+        // set basic subcommand group details
+        group.setName(name)
+            .setDescription(subcommandGroup.description)
+            .setNameLocalizations(subcommandGroup.localizations?.name ?? null)
+            .setDescriptionLocalizations(subcommandGroup.localizations?.description ?? null);
+        // add subcommands
+        for(const subcommandName in subcommandGroup.subcommands) {
+            buildSubcommand(builder, subcommandName, subcommandGroup.subcommands[subcommandName]);
+        }
+        return group;
+    });
 }
 
 function initStandardValues<T extends ApplicationCommandOptionBase>(builder: T, name: string, option: SlasherCommandOption) {
