@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionBase, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionBase, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 import { getIntegrationTypes, getInteractionContexts, getPermissionBits } from "./util";
 import SlasherCommand from "./types/SlasherCommand";
 import SlasherCommandOption from "./options";
@@ -92,7 +92,7 @@ function buildOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilde
     }
 }
 
-function buildSubcommand(builder: SlashCommandBuilder, name: string, subcommand: Subcommand) {
+function buildSubcommand(builder: SlashCommandBuilder | SlashCommandSubcommandGroupBuilder, name: string, subcommand: Subcommand) {
     return builder.addSubcommand(sub => {
         // set basic subcommand details
         sub.setName(name)
@@ -118,7 +118,7 @@ function buildSubcommandGroup(builder: SlashCommandBuilder, name: string, subcom
             .setDescriptionLocalizations(subcommandGroup.localizations?.description ?? null);
         // add subcommands
         for(const subcommandName in subcommandGroup.subcommands) {
-            buildSubcommand(builder, subcommandName, subcommandGroup.subcommands[subcommandName]);
+            buildSubcommand(group, subcommandName, subcommandGroup.subcommands[subcommandName]);
         }
         return group;
     });

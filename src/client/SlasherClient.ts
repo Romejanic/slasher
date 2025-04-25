@@ -3,6 +3,8 @@ import { makeErrorEmbed } from "./util";
 import { SlasherClientOptions } from "./const";
 import syncCommandDefinitions, { EffectiveChangeMode } from "../sync";
 import SlasherLogger from "../logger";
+import { isSubcommands } from "../commands/types/SlasherSubcommands";
+import { isSubcommandGroups } from "../commands/types/SlasherSubcommandGroups";
 
 export default class SlasherClient extends Client {
 
@@ -31,7 +33,24 @@ export default class SlasherClient extends Client {
             const cmd = this.slasherOptions.commands.find(v => v.name === i.commandName);
             if(cmd) {
                 try {
-                    await cmd.execute(i);
+                    if(isSubcommands(cmd)) {
+                        const subcommandName = i.options.getSubcommand(true);
+                        if(subcommandName in cmd.subcommands) {
+                            await cmd.subcommands[subcommandName].execute(i);
+                        } else {
+                            throw new Error("TODO replace with real response");
+                        }
+                    } else if(isSubcommandGroups(cmd)) {
+                        const subcommandName = i.options.getSubcommand(true);
+                        const groupName = i.options.getSubcommandGroup(true);
+                        if(groupName in cmd.groups && subcommandName in cmd.groups[groupName].subcommands) {
+                            await cmd.groups[groupName].subcommands[subcommandName].execute(i);
+                        } else {
+                            throw new Error("TODO replace with real response");
+                        }
+                    } else {
+                        await cmd.execute(i);
+                    }
                 } catch(e) {
                     this.logger.error("Error while running command", e);
                     const embed = makeErrorEmbed("Error running command", "Sorry, an error occurred while running this command. If the problem persists please contact the bot developer.");
