@@ -1,6 +1,6 @@
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionBase, SlashCommandBuilder } from "discord.js";
-import { SlasherCommand } from ".";
 import { getIntegrationTypes, getInteractionContexts, getPermissionBits } from "./util";
+import SlasherCommand from "./types/SlasherCommand";
 import SlasherCommandOption from "./options";
 
 export default function buildApiCommand(command: SlasherCommand) {

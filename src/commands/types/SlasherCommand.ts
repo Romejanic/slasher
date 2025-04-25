@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
-import SlasherCommandOption from "./options";
+import SlasherCommandOption from "../options";
 
 /** Array of permissions which are required to execute a command. */
 export type CommandPermissions = PermissionsString[];
@@ -20,7 +20,7 @@ export interface InstallScope {
     user: boolean;
 }
 
-export interface SlasherCommand {
+export default interface SlasherCommand {
 
     /** The name of the command as executed in Discord. */
     name: string;

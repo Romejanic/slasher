@@ -1,5 +1,5 @@
 import { ClientOptions, Snowflake } from "discord.js";
-import { SlasherCommand } from "../commands";
+import { SlasherCommand } from "../commands/types/SlasherCommand";
 import { LogLevel } from "../logger";
 
 /** Type for controlling sync mode of client */

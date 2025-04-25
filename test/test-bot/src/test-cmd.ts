@@ -1,5 +1,5 @@
 import { userMention } from "discord.js";
-import { type SlasherCommand } from "../../../src/commands";
+import type SlasherCommand from "../../../src/commands/types/SlasherCommand";
 
 const testCommand: SlasherCommand = {
 

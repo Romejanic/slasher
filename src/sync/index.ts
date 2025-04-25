@@ -1,7 +1,7 @@
 import { GuildResolvable, RESTGetAPIApplicationCommandsResult, RESTPostAPIApplicationCommandsJSONBody, Snowflake } from "discord.js";
 import SlasherClient from "../client";
 import { CommandSyncMode } from "../client/const";
-import { SlasherCommand } from "../commands";
+import { SlasherCommand } from "../commands/types/SlasherCommand";
 import syncRoutes from "./routes";
 import buildApiCommand from "../commands/api";
 import checkCommandDiff from "../commands/diff";

@@ -1,5 +1,5 @@
 import { ApplicationIntegrationType, InteractionContextType, PermissionFlagsBits } from "discord.js";
-import { CommandContexts, CommandPermissions, InstallScope } from ".";
+import { CommandContexts, CommandPermissions, InstallScope } from "./types/SlasherCommand";
 
 export function getInteractionContexts(contexts: Partial<CommandContexts>) {
     const types = new Array<InteractionContextType>();

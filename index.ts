@@ -1,5 +1,5 @@
 // Export API
-export * as commands from './src/commands';
+export * as commands from './src/commands/types/SlasherCommand';
 
 // LEGACY API
 export * from './src/legacy/api/wrapped-client';
