@@ -24,6 +24,7 @@ export interface Subcommand {
 
 }
 
+/** Definition for a slash command using subcommands. */
 export default interface SlasherSubcommands extends Omit<SlasherCommand, "options" | "execute"> {
     /** The subcommands for this command. The key is used to identify the subcommand name. */
     subcommands: Record<string, Subcommand>;

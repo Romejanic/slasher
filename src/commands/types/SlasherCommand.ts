@@ -20,6 +20,7 @@ export interface InstallScope {
     user: boolean;
 }
 
+/** Definition for a basic slash command. */
 export default interface SlasherCommand {
 
     /** The name of the command as executed in Discord. */

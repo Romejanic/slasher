@@ -18,6 +18,7 @@ export interface SubcommandGroup {
 
 }
 
+/** Definition for a slash command using subcommand groups. */
 export default interface SlasherSubcommandGroups extends Omit<SlasherCommand, "options" | "execute"> {
     /** The subcommand groups of this command. The key is used to identify the subcommand group name. */
     groups: Record<string, SubcommandGroup>;
