@@ -1,11 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import buildApiCommand from "../../src/commands/api";
+import buildApiSlashCommand from "../../src/commands/api";
 import { ApplicationCommandType, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 
 describe("api.ts", () => {
 
     test("buildApiCommand()", () => {
-        const builder = buildApiCommand({
+        const builder = buildApiSlashCommand({
             name: "my-command",
             description: "A new type of command",
             execute() {}

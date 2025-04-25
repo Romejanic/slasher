@@ -1,6 +1,8 @@
 import { ChatInputCommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
 import SlasherCommandOption from "../options";
 import CommandBase from "./CommandBase";
+import { isSubcommands } from "./SlasherSubcommands";
+import { isSubcommandGroups } from "./SlasherSubcommandGroups";
 
 /** Array of permissions which are required to execute a command. */
 export type CommandPermissions = PermissionsString[];
@@ -45,4 +47,10 @@ export default interface SlasherCommand extends CommandBase {
      */
     execute: (ctx: ChatInputCommandInteraction) => Promise<unknown>;
 
+}
+
+export function isSlashCommand(command: object): command is SlasherCommand {
+    // these are valid as they are child types
+    if(isSubcommands(command) || isSubcommandGroups(command)) return true;
+    return "description" in command && "execute" in command && typeof command["execute"] === "function";
 }

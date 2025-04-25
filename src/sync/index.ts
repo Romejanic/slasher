@@ -1,11 +1,11 @@
 import { GuildResolvable, RESTGetAPIApplicationCommandsResult, RESTPostAPIApplicationCommandsJSONBody, Snowflake } from "discord.js";
 import SlasherClient from "../client";
 import { CommandSyncMode } from "../client/const";
-import { SlasherCommand } from "../commands/types/SlasherCommand";
 import syncRoutes from "./routes";
-import buildApiCommand from "../commands/api";
 import checkCommandDiff from "../commands/diff";
 import { deleteCommands, updateCommands } from "./apply";
+import SlasherCommand from "../commands/types/SlasherCommand";
+import buildApiObject from "../commands/api";
 
 export type EffectiveSyncMode = "global" | "server" | "none";
 export type EffectiveChangeMode = "destructive" | "non-destructive" | "dry-run";
@@ -30,7 +30,7 @@ export default async function syncCommandDefinitions(client: SlasherClient, comm
     // convert each command definition to a command builder
     const commandList = new Array<RESTPostAPIApplicationCommandsJSONBody>();
     for(const command of commands) {
-        commandList.push(buildApiCommand(command).toJSON());
+        commandList.push(buildApiObject(command).toJSON());
     }
 
     const commandsAdd = new Array<RESTPostAPIApplicationCommandsJSONBody>();

@@ -4,13 +4,15 @@ import testCommand from "./test-cmd";
 import guessCommand from "./guess-cmd";
 import subcommandTest from "./sub-cmd";
 import subcommandGroupTest from "./group-cmd";
+import inspectUserCommand from "./inspect-user-cmd";
 
 const client = new SlasherClient({
     commands: [
         testCommand,
         guessCommand,
         subcommandTest,
-        subcommandGroupTest
+        subcommandGroupTest,
+        inspectUserCommand
     ],
     sync: {
         syncServerId: "883650514431148053"

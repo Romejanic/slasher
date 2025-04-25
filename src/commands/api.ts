@@ -1,11 +1,22 @@
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionBase, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionBase, ApplicationCommandType, ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 import { getIntegrationTypes, getInteractionContexts, getPermissionBits } from "./util";
-import SlasherCommand from "./types/SlasherCommand";
+import SlasherCommand, { isSlashCommand } from "./types/SlasherCommand";
 import SlasherCommandOption from "./options";
 import { isSubcommands, Subcommand } from "./types/SlasherSubcommands";
 import { isSubcommandGroups, SubcommandGroup } from "./types/SlasherSubcommandGroups";
+import SlasherContextCommand, { isContextMenuCommand } from "./types/SlasherContextMenuCommand";
 
-export default function buildApiCommand(command: SlasherCommand) {
+export default function buildApiObject(command: SlasherCommand | SlasherContextCommand) {
+    if(isSlashCommand(command)) {
+        return buildApiSlashCommand(command);
+    } else if(isContextMenuCommand(command)) {
+        return buildApiContextCommand(command);
+    } else {
+        throw new Error("Can't build api object, unknown command format");
+    }
+}
+
+function buildApiSlashCommand(command: SlasherCommand) {
     const builder = new SlashCommandBuilder();
     // basic details
     builder.setName(command.name)
@@ -29,6 +40,20 @@ export default function buildApiCommand(command: SlasherCommand) {
     // other optional fields
     if(command.localizations?.name) builder.setNameLocalizations(command.localizations.name);
     if(command.localizations?.description) builder.setDescriptionLocalizations(command.localizations.description);
+    if(command.contexts) builder.setContexts(getInteractionContexts(command.contexts));
+    if(command.installScope) builder.setIntegrationTypes(getIntegrationTypes(command.installScope));
+    // finished
+    return builder;
+}
+
+function buildApiContextCommand(command: SlasherContextCommand) {
+    const builder = new ContextMenuCommandBuilder();
+    // basic details
+    builder.setName(command.name)
+        .setType(command.target === "user" ? ApplicationCommandType.User : ApplicationCommandType.Message)
+        .setDefaultMemberPermissions(command.defaultPermissions ? getPermissionBits(command.defaultPermissions) : null);
+    // other optional fields
+    if(command.nameLocalizations) builder.setNameLocalizations(command.nameLocalizations);
     if(command.contexts) builder.setContexts(getInteractionContexts(command.contexts));
     if(command.installScope) builder.setIntegrationTypes(getIntegrationTypes(command.installScope));
     // finished
