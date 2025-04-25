@@ -1,10 +1,8 @@
-import { Client, ClientOptions, Events, GatewayIntentBits, Interaction } from "discord.js";
-import { makeErrorEmbed } from "./util";
+import { Client, ClientOptions, Events, GatewayIntentBits } from "discord.js";
 import { SlasherClientOptions } from "./const";
 import syncCommandDefinitions, { EffectiveChangeMode } from "../sync";
 import SlasherLogger from "../logger";
-import { isSubcommands } from "../commands/types/SlasherSubcommands";
-import { isSubcommandGroups } from "../commands/types/SlasherSubcommandGroups";
+import dispatchInteraction from "./dispatch";
 
 export default class SlasherClient extends Client {
 
@@ -17,52 +15,12 @@ export default class SlasherClient extends Client {
         this.slasherLogger = new SlasherLogger(options?.logger?.level || "warn", options?.logger?.prefix);
         // register interaction handler only if commands are passed
         if(options && options.commands) {
-            this.on(Events.InteractionCreate, this.handleInteraction.bind(this));
+            this.on(Events.InteractionCreate, async i => await dispatchInteraction(this, options.commands, i));
         }
         // register ready handler
         this.once(Events.ClientReady, () => {
             this.slasherLogger.debug(`Slasher client ready (user: ${this.user.tag})`);
         });
-    }
-
-    private async handleInteraction(i: Interaction) {
-        // TODO add support for other command types
-        if(!i.isChatInputCommand()) return;
-        // find matching command
-        if(this.slasherOptions.commands) {
-            const cmd = this.slasherOptions.commands.find(v => v.name === i.commandName);
-            if(cmd) {
-                try {
-                    if(isSubcommands(cmd)) {
-                        const subcommandName = i.options.getSubcommand(true);
-                        if(subcommandName in cmd.subcommands) {
-                            await cmd.subcommands[subcommandName].execute(i);
-                        } else {
-                            throw new Error("TODO replace with real response");
-                        }
-                    } else if(isSubcommandGroups(cmd)) {
-                        const subcommandName = i.options.getSubcommand(true);
-                        const groupName = i.options.getSubcommandGroup(true);
-                        if(groupName in cmd.groups && subcommandName in cmd.groups[groupName].subcommands) {
-                            await cmd.groups[groupName].subcommands[subcommandName].execute(i);
-                        } else {
-                            throw new Error("TODO replace with real response");
-                        }
-                    } else {
-                        await cmd.execute(i);
-                    }
-                } catch(e) {
-                    this.logger.error("Error while running command", e);
-                    const embed = makeErrorEmbed("Error running command", "Sorry, an error occurred while running this command. If the problem persists please contact the bot developer.");
-                    if(i.replied || i.deferred) await i.editReply({ embeds: [embed] });
-                    else await i.reply({ embeds: [embed] });
-                }
-            } else {
-                this.logger.warn(`Unknown command /${i.commandName}, commands may be out of date`);
-                const embed = makeErrorEmbed("Command not found", "Sorry, this command does not exist. Please contact the bot developer if you believe this is in error.");
-                await i.reply({ embeds: [embed] });
-            }
-        }
     }
 
     public async login(token?: string) {
