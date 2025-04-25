@@ -15,7 +15,7 @@ export default class SlasherClient extends Client {
         this.slasherLogger = new SlasherLogger(options?.logger?.level || "warn", options?.logger?.prefix);
         // register interaction handler only if commands are passed
         if(options && options.commands) {
-            this.on(Events.InteractionCreate, async i => await dispatchInteraction(this, options.commands, i));
+            this.on(Events.InteractionCreate, async i => await dispatchInteraction(options.commands, i));
         }
         // register ready handler
         this.once(Events.ClientReady, () => {

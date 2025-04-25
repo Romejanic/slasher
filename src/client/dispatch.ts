@@ -6,7 +6,7 @@ import { isSubcommands } from "../commands/types/SlasherSubcommands";
 import { makeErrorEmbed } from "./util";
 import { isContextMenuCommand } from "../commands/types/SlasherContextMenuCommand";
 
-export default async function dispatchInteraction(client: SlasherClient, commands: SlasherCommand[], i: Interaction) {
+export default async function dispatchInteraction(commands: SlasherCommand[], i: Interaction) {
     if(i.isChatInputCommand()) {
         await dispatchChatCommand(commands, i);
     } else if(i.isContextMenuCommand()) {
