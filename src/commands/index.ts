@@ -1,4 +1,4 @@
-import { CommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
+import { ChatInputCommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
 import SlasherCommandOption from "./options";
 
 /** Array of permissions which are required to execute a command. */
@@ -53,6 +53,6 @@ export interface SlasherCommand {
      * The function which is called when this command is invoked which handles its execution.
      * @param ctx The command context containing information about the command.
      */
-    execute: (ctx: CommandInteraction) => unknown;
+    execute: (ctx: ChatInputCommandInteraction) => unknown;
 
 }
