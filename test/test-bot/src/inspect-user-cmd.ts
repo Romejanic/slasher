@@ -12,7 +12,7 @@ const inspectUserCommand: SlasherContextCommand = {
     async execute(ctx) {
         const member = ctx.targetMember! as GuildMember;
         const embed = new EmbedBuilder()
-            .setTitle(ctx.user.displayName)
+            .setTitle(member.user.displayName)
             .setFields([
                 { name: "Highest Role", value: member.roles.highest.name },
                 { name: "Join Date", value: member.joinedAt?.toString() || "n/a" }

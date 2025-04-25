@@ -4,6 +4,7 @@ import SlasherCommand from "../commands/types/SlasherCommand";
 import { isSubcommandGroups } from "../commands/types/SlasherSubcommandGroups";
 import { isSubcommands } from "../commands/types/SlasherSubcommands";
 import { makeErrorEmbed } from "./util";
+import { isContextMenuCommand } from "../commands/types/SlasherContextMenuCommand";
 
 export default async function dispatchInteraction(client: SlasherClient, commands: SlasherCommand[], i: Interaction) {
     if(i.isChatInputCommand()) {
@@ -32,8 +33,11 @@ async function dispatchChatCommand(commands: SlasherCommand[], i: ChatInputComma
                 } else {
                     throw new Error("TODO replace with real response");
                 }
-            } else {
+            } else if(isSubcommands(cmd)) {
                 await cmd.execute(i);
+            } else {
+                // this isn't a chat command
+                throw new Error("TODO replace with real response");
             }
         } catch(e) {
             this.logger.error("Error while running command", e);
@@ -49,5 +53,26 @@ async function dispatchChatCommand(commands: SlasherCommand[], i: ChatInputComma
 }
 
 async function dispatchContextCommand(commands: SlasherCommand[], i: ContextMenuCommandInteraction) {
-    
+    const cmd = commands.find(v => v.name === i.commandName);
+    if(cmd) {
+        try {
+            if(isContextMenuCommand(cmd)) {
+                if(cmd.target === "user" && i.isUserContextMenuCommand()) {
+                    await cmd.execute(i);
+                } else if(cmd.target === "message" && i.isMessageContextMenuCommand()) {
+                    await cmd.execute(i);
+                } else {
+                    throw new Error("Invalid command target or interaction type");
+                }
+            } else {
+                // this isn't a context command
+                throw new Error("TODO replace with real response");
+            }
+        } catch(e) {
+            this.logger.error("Error while running command", e);
+            const embed = makeErrorEmbed("Error running command", "Sorry, an error occurred while running this command. If the problem persists please contact the bot developer.");
+            if(i.replied || i.deferred) await i.editReply({ embeds: [embed] });
+            else await i.reply({ embeds: [embed] });
+        }
+    }
 }
