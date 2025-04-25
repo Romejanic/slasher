@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction } from "discord.js";
-import SlasherClient from ".";
 import SlasherCommand from "../commands/types/SlasherCommand";
 import { isSubcommandGroups } from "../commands/types/SlasherSubcommandGroups";
 import { isSubcommands } from "../commands/types/SlasherSubcommands";
@@ -74,5 +73,9 @@ async function dispatchContextCommand(commands: SlasherCommand[], i: ContextMenu
             if(i.replied || i.deferred) await i.editReply({ embeds: [embed] });
             else await i.reply({ embeds: [embed] });
         }
+    } else {
+        this.logger.warn(`Unknown command ${i.commandName}, commands may be out of date`);
+        const embed = makeErrorEmbed("Command not found", "Sorry, this command does not exist. Please contact the bot developer if you believe this is in error.");
+        await i.reply({ embeds: [embed] });
     }
 }
