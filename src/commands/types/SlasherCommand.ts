@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
 import SlasherCommandOption from "../options";
+import CommandBase from "./CommandBase";
 
 /** Array of permissions which are required to execute a command. */
 export type CommandPermissions = PermissionsString[];
@@ -21,10 +22,7 @@ export interface InstallScope {
 }
 
 /** Definition for a basic slash command. */
-export default interface SlasherCommand {
-
-    /** The name of the command as executed in Discord. */
-    name: string;
+export default interface SlasherCommand extends CommandBase {
 
     /** A brief description of the command's purpose or function. */
     description: string;
@@ -41,19 +39,10 @@ export default interface SlasherCommand {
         description: LocalizationMap;
     }>;
 
-    /** The default permissions applied to your command. This can be overridden by server owners. */
-    defaultPermissions?: CommandPermissions;
-
-    /** The contexts in which the command can be used. */
-    contexts?: Partial<CommandContexts>;
-
-    /** Where this command can be installed (guild or user). */
-    installScope?: Partial<InstallScope>;
-
     /**
      * The function which is called when this command is invoked which handles its execution.
      * @param ctx The command context containing information about the command.
      */
-    execute: (ctx: ChatInputCommandInteraction) => unknown;
+    execute: (ctx: ChatInputCommandInteraction) => Promise<unknown>;
 
 }
