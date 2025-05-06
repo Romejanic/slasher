@@ -36,39 +36,36 @@ describe("diff.ts - checkCommandDiff()", () => {
         expect(checkCommandDiff(def, { ...apiCmd, type: ApplicationCommandType.User })).toBeFalse();
     });
 
-    // test("options", () => {
-    //     const def: RESTPostAPIApplicationCommandsJSONBody = {
-    //         name: "foo",
-    //         description: "a description",
-    //         type: ApplicationCommandType.ChatInput,
-    //         nsfw: false,
-    //         options: [
-    //             {
-    //                 type: ApplicationCommandOptionType.String,
-    //                 name: "firstop",
-    //                 description: "a different option"
-    //             }
-    //         ]
-    //     };
-    //     const apiCmd: APIApplicationCommand = {
-    //         id: "12345678",
-    //         name: "foo",
-    //         description: "a description",
-    //         type: ApplicationCommandType.ChatInput,
-    //         nsfw: false,
-    //         version: "1",
-    //         application_id: "1234567",
-    //         default_member_permissions: null,
-    //         options: [
-    //             {
-    //                 type: ApplicationCommandOptionType.String,
-    //                 name: "firstop",
-    //                 description: "a different option"
-    //             }
-    //         ]
-    //     };
-    //     expect(checkCommandDiff(def, apiCmd)).toBeTrue();
-    //     expect(checkCommandDiff());
-    // });
+    test("options", () => {
+        const def = new SlashCommandBuilder()
+            .setName("foo")
+            .setDescription("a description")
+            .setNSFW(false)
+            .setDefaultMemberPermissions(null)
+            .addStringOption(option => option
+                .setName("firstop")
+                .setDescription("a different option"))
+            .toJSON();
+        const apiCmd: APIApplicationCommand = {
+            id: "12345678",
+            name: "foo",
+            description: "a description",
+            type: ApplicationCommandType.ChatInput,
+            nsfw: false,
+            version: "1",
+            application_id: "1234567",
+            default_member_permissions: null,
+            options: [
+                {
+                    type: ApplicationCommandOptionType.String,
+                    name: "firstop",
+                    description: "a different option",
+                    required: false
+                }
+            ]
+        };
+        expect(checkCommandDiff(def, apiCmd)).toBeTrue();
+        // expect(checkCommandDiff());
+    });
 
 });
