@@ -24,7 +24,11 @@ const subcommandTest: SlasherSubcommands = {
                 });
             },
         }
-    }
+    },
+
+    builderHook(builder) {
+        builder.setDescription("desc override");
+    },
 
 };
 

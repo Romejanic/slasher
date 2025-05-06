@@ -1,5 +1,15 @@
 import { APIApplicationCommand, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
-import {diff} from "deep-object-diff";
+import { detailedDiff } from "deep-object-diff";
+
+// list of API properties to populate if they are missing
+const populateUndefined: Array<keyof APIApplicationCommand> = [
+    "name_localizations",
+    "description_localizations",
+    "contexts",
+    "default_permission",
+    "dm_permission",
+    "integration_types"
+];
 
 /**
  * Compares a defined command with an API command and determines if they are equal.
@@ -14,42 +24,22 @@ export default function checkCommandDiff(def: RESTPostAPIApplicationCommandsJSON
     delete cmdData["application_id"];
     delete cmdData["version"];
     delete cmdData["guild_id"];
+    // populate undefined properties
+    for(const key of populateUndefined) {
+        // @ts-ignore
+        if(typeof cmdData[key] === "undefined") cmdData[key] = undefined;
+    }
     // add empty options array if it doesn't exist
     if(!cmdData["options"]) cmdData["options"] = [];
     // check objects are the same
     // (ignore undefined diffs)
-    const objDiff = diff(cmdData, def);
-    return checkObjectDiff(objDiff);
-}
-
-function checkObjectDiff(diff: object) {
-    if(diff === null || typeof diff === "undefined") return true;
-    // special case for array
-    if(checkArray(diff)) {
-        let flag = true;
-        for(const key in diff) {
-            // ONLY for arrays undefined means item was removed
-            if(typeof diff[key] === "undefined") flag = false;
-            flag = flag && checkObjectDiff(diff[key]);
-        }
-        return flag;
-    }
-    // compare each key in diff
-    for(const key in diff) {
-        if(typeof diff[key] !== "undefined" || diff[key] === null) {
-            if(typeof diff[key] === "object") {
-                return checkObjectDiff(diff[key]);
-            } else {
-                return false;
-            }
-        }
-    }
+    const objDiff = detailedDiff(cmdData, def);
+    if(!isObjectEmpty(objDiff.added)) return false;
+    if(!isObjectEmpty(objDiff.deleted)) return false;
+    if(!isObjectEmpty(objDiff.updated)) return false;
     return true;
 }
 
-function checkArray(diff: unknown): diff is Array<object> {
-    return Array.isArray(diff) || (
-        typeof diff === "object" &&
-        Object.keys(diff).every(key => key.match("^[0-9]+$") !== null)
-    );
+function isObjectEmpty(obj: object) {
+    return Object.keys(obj).length === 0;
 }

@@ -1,7 +1,7 @@
 import { CommandContexts, CommandPermissions, InstallScope } from "./SlasherCommand";
 
 /** Base command type with shared properties across all commands. Don't use this directly. */
-export default interface CommandBase {
+export default interface CommandBase<B> {
 
     /** The name of the command as it appears in Discord. */
     name: string;
@@ -14,5 +14,8 @@ export default interface CommandBase {
 
     /** Where this command can be installed (guild or user). */
     installScope?: Partial<InstallScope>;
+
+    /** Hook to access the underlying builder during the sync process. */
+    builderHook?: (builder: B) => void;
 
 }

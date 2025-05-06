@@ -1,9 +1,9 @@
-import { LocalizationMap, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction } from "discord.js";
+import { ContextMenuCommandBuilder, LocalizationMap, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction } from "discord.js";
 import CommandBase from "./CommandBase";
 
 export type ContextMenuTarget = "user" | "message";
 
-interface ContextCommandBase extends CommandBase {
+interface ContextCommandBase extends CommandBase<ContextMenuCommandBuilder> {
 
     /** Mapping of localizations for the name of the command. */
     nameLocalizations?: LocalizationMap;

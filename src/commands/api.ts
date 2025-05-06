@@ -42,6 +42,8 @@ function buildApiSlashCommand(command: SlasherCommand) {
     if(command.localizations?.description) builder.setDescriptionLocalizations(command.localizations.description);
     if(command.contexts) builder.setContexts(getInteractionContexts(command.contexts));
     if(command.installScope) builder.setIntegrationTypes(getIntegrationTypes(command.installScope));
+    // allow command to hook into builder
+    if(command.builderHook) command.builderHook(builder);
     // finished
     return builder;
 }
@@ -56,6 +58,8 @@ function buildApiContextCommand(command: SlasherContextCommand) {
     if(command.nameLocalizations) builder.setNameLocalizations(command.nameLocalizations);
     if(command.contexts) builder.setContexts(getInteractionContexts(command.contexts));
     if(command.installScope) builder.setIntegrationTypes(getIntegrationTypes(command.installScope));
+    // allow command to hook into builder
+    if(command.builderHook) command.builderHook(builder);
     // finished
     return builder;
 }

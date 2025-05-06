@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, LocalizationMap, PermissionsString } from "discord.js";
+import { ChatInputCommandInteraction, LocalizationMap, PermissionsString, SlashCommandBuilder } from "discord.js";
 import SlasherCommandOption from "../options";
 import CommandBase from "./CommandBase";
 import { isSubcommands } from "./SlasherSubcommands";
@@ -24,7 +24,7 @@ export interface InstallScope {
 }
 
 /** Definition for a basic slash command. */
-export default interface SlasherCommand extends CommandBase {
+export default interface SlasherCommand extends CommandBase<SlashCommandBuilder> {
 
     /** A brief description of the command's purpose or function. */
     description: string;
