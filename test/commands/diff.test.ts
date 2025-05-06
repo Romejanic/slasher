@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { APIApplicationCommand, ApplicationCommandOptionType, ApplicationCommandType, RESTPostAPIApplicationCommandsJSONBody, SlashCommandBuilder } from "discord.js";
+import { APIApplicationCommand, APIApplicationCommandStringOption, ApplicationCommandOptionType, ApplicationCommandType, RESTPostAPIApplicationCommandsJSONBody, SlashCommandBuilder } from "discord.js";
 import checkCommandDiff from "../../src/commands/diff";
 
 describe("diff.ts - checkCommandDiff()", () => {
@@ -71,6 +71,53 @@ describe("diff.ts - checkCommandDiff()", () => {
                 ...def.options[0],
                 name: "anotherop"
             }]
+        }, apiCmd)).toBeFalse();
+        expect(checkCommandDiff({
+            ...def,
+            options: [{
+                ...def.options[0],
+                description: "different desc"
+            }]
+        }, apiCmd)).toBeFalse();
+        expect(checkCommandDiff({
+            ...def,
+            options: [{
+                ...def.options[0],
+                required: true
+            }]
+        }, apiCmd)).toBeFalse();
+        expect(checkCommandDiff({
+            ...def,
+            options: [{
+                ...def.options[0],
+                type: ApplicationCommandOptionType.Integer,
+                choices: undefined
+            }]
+        }, apiCmd)).toBeFalse();
+        expect(checkCommandDiff({
+            ...def,
+            options: [{
+                ...def.options[0],
+                choices: [
+                    { name: "Foo", value: "abc" },
+                    { name: "Bar", value: "def" }
+                ]
+            } as APIApplicationCommandStringOption]
+        }, apiCmd)).toBeFalse();
+        expect(checkCommandDiff({
+            ...def,
+            options: [{
+                ...def.options[0],
+                min_length: 2,
+                max_length: 10
+            } as APIApplicationCommandStringOption]
+        }, apiCmd)).toBeFalse();
+        expect(checkCommandDiff({
+            ...def,
+            options: [{
+                ...def.options[0],
+                autocomplete: true
+            } as APIApplicationCommandStringOption]
         }, apiCmd)).toBeFalse();
     });
 
