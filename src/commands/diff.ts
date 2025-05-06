@@ -34,10 +34,10 @@ export default function checkCommandDiff(def: RESTPostAPIApplicationCommandsJSON
     // check objects are the same
     // (ignore undefined diffs)
     const objDiff = detailedDiff(cmdData, def);
-    if(!isObjectEmpty(objDiff.added)) return filterAdded(objDiff.added);
-    if(!isObjectEmpty(objDiff.deleted)) return false;
-    if(!isObjectEmpty(objDiff.updated)) return false;
-    return true;
+    if(!isObjectEmpty(objDiff.added) && !filterAdded(objDiff.added))
+        return false;
+    return isObjectEmpty(objDiff.deleted) &&
+        isObjectEmpty(objDiff.updated);
 }
 
 function isObjectEmpty(obj: object) {

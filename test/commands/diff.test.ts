@@ -65,7 +65,13 @@ describe("diff.ts - checkCommandDiff()", () => {
             ]
         };
         expect(checkCommandDiff(def, apiCmd)).toBeTrue();
-        // expect(checkCommandDiff());
+        expect(checkCommandDiff({
+            ...def,
+            options: [{
+                ...def.options[0],
+                name: "anotherop"
+            }]
+        }, apiCmd)).toBeFalse();
     });
 
 });
